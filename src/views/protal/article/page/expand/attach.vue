@@ -2,7 +2,7 @@
 	<div>
 		<Button type="info" size="small" @click="show = true">{{ $t('review') }}</Button>
 		<Drawer v-model="show" width="600" :draggable="true" :title="$t('review') + $t('article_attach')">
-			<Upload multiple type="drag" :action="assets.upload.file" :show-upload-list="false" :on-success="handleUploadSuccess">
+			<Upload multiple type="drag" :action="$upload.file" :show-upload-list="false" :on-success="handleUploadSuccess">
 				<div style="padding: 20px 0">
 					<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
 					<p>{{ $t('upload_drag') }}</p>
@@ -17,7 +17,7 @@
 								{{ file.name }}
 							</span>
 							<template v-if="file.extension == 'pdf'">
-								<a :href="assets.url + file.link" target="_blank"><Icon type="ios-eye" class="ivu-upload-list-view" /></a>
+								<a :href="$assets.url + file.link" target="_blank"><Icon type="ios-eye" class="ivu-upload-list-view" /></a>
 							</template>
 							<Icon type="ios-close" class="ivu-upload-list-remove" @click.native="handleRemove(file, index)" />
 						</li>
@@ -31,10 +31,8 @@
 <script>
 export default {
 	data() {
-		let that = this;
 		return {
 			show: false,
-			assets: that.config.assets
 		};
 	},
 	props: {
@@ -52,7 +50,6 @@ export default {
 					title: this.$t('tips'),
 					desc: res.info
 				});
-				return false;
 			}
 		},
 		handleRemove(file, index) {

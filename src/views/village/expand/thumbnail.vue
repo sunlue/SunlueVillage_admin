@@ -1,13 +1,18 @@
 <template>
 	<div class="thumbnail">
-		<Tooltip :content="$t('tips_dblclick_delte')" placement="right">
-			<img v-if="linkpath" @dblclick="deleteImage" :src="thumbnail" />
+		<Tooltip :content="$t('tips_dblclick_delte')" placement="right" v-if="thumbnail">
+			<img @dblclick="deleteImage" @click="prviewImage" :src="$assets.url+thumbnail" />
 		</Tooltip>
-		<Upload  v-if="!linkpath" :action="upload.url" :show-upload-list="false"
-			:format="['png','jpg','jpeg','gif']" name="file" :on-success="uploadThumbSuccess"
-			:on-error="uploadThumbError" :on-progress="uploadThumbProgress"
+		<Upload
+			v-else name="file"
+			:action="$upload.image"
+			:show-upload-list="false"
+			:format="['png', 'jpg', 'jpeg', 'gif']"
+			:on-success="uploadThumbSuccess"
+			:on-error="uploadThumbError"
+			:on-progress="uploadThumbProgress"
 			:on-format-error="uploadThumbFormatError">
-			<Button type="info" size="small">{{$t('upload')}}</Button>
+			<Button type="info" size="small">{{ $t('upload') }}</Button>
 		</Upload>
 		<Modal v-model="slider.show" :closable="false" :footer-hide="true" :mask-closable="false">
 			<Slider v-model="slider.value" :show-tip="slider.tip"></Slider>
@@ -16,94 +21,90 @@
 </template>
 
 <script>
-	import axios from 'axios'
-	export default{
-		data() {
-			let uploadImage=this.config.assets.upload.image;
-			return {
-				linkpath:'',
-				upload:{
-					url:uploadImage,
-				},
-				slider:{
-					show:false,
-					value:0,
-					tip:'never'
-				}
+import axios from 'axios';
+export default {
+	data() {
+		return {
+			slider: {
+				show: false,
+				value: 0,
+				tip: 'never'
+			}
+		};
+	},
+	props: {
+		data: {
+			type: Object,
+			default: () => {}
+		},
+		thumbnail: {
+			type: String,
+			default: ''
+		}
+	},
+	methods: {
+		uploadThumbProgress(event) {
+			this.slider.value = parseInt((event.loaded / event.total) * 100);
+			if (this.slider.value > 0 && this.slider.value < 100) {
+				this.slider.tip = 'always';
+				this.slider.show = true;
+			} else {
+				this.slider.tip = 'never';
+				this.slider.show = false;
 			}
 		},
-		props: {
-			data: {
-				type: Object,
-				default: ()=>{}
-			},
-			thumbnail:{
-				type:String,
-				default:''
+		uploadThumbSuccess(response) {
+			if (response.code != 200) {
+				this.$Message.error(response.info);
+			}else{
+				this.$emit('uploadSuccess', response.data);
+				this.thumbnail = response.data.link;
+				this.$Message.success('success');
 			}
 		},
-		mounted(){
-			let uploadUrl=this.config.assets.upload.url;
-			this.linkpath=this.thumbnail;
-			this.upload.path=uploadUrl+this.thumbnail;
+		uploadThumbError(error) {
+			console.error(error);
 		},
-		methods: {
-			uploadThumbProgress(event ){
-				this.slider.value=parseInt((event.loaded/event.total)*100);
-				if (this.slider.value>0 && this.slider.value<100) {
-					this.slider.tip='always';
-					this.slider.show=true;
-				} else{
-					this.slider.tip='never';
-					this.slider.show=false;
-				}
-			},
-			uploadThumbSuccess(response){
-				if(response.code!=200){
-					this.$Message.error(response.info);
-				}
-				this.$emit('uploadSuccess',response.data);
-				this.linkpath=response.data.link;
-				this.upload.path=response.data.url+response.data.link;
-			},
-			uploadThumbError(error){
-				console.error(error)
-			},
-			uploadThumbFormatError(file){
-				this.$Message.error('文件['+file.name+']格式错误');
-			},
-			deleteImage(){
-				let that=this,
-					uniqid=that.data.uniqid,
-					uploadUrl=that.config.assets.upload.url;
-				that.$Modal.confirm({
-					title: that.$t('tips'),
-					content: that.$t('tips_delete_data'),
-					onOk: function() {
-						that.$store.dispatch('updateArticleList',{
-							uniqid:uniqid,
-							field:'thumbnail',
-							value:''
-						}).then((result) => {
-							axios.delete(uploadUrl+'delete',{
-								data:{path:that.linkpath}
-							}).then(()=>{
-								that.linkpath='';
-							})
+		uploadThumbFormatError(file) {
+			this.$Message.error('文件[' + file.name + ']格式错误');
+		},
+		prviewImage(){
+			
+		},
+		deleteImage() {
+			let that = this,
+				uniqid = that.data.uniqid;
+			that.$Modal.confirm({
+				title: that.$t('tips'),
+				content: that.$t('tips_delete_data'),
+				onOk: function() {
+					that.$store.dispatch('updateVillageData', {
+						uniqid: uniqid,
+						field: 'thumbnail',
+						value: ''
+					}).then(result => {
+						axios.delete(that.$assets.delete, {
+							data: { path: that.thumbnail }
+						}).then(() => {
+							that.thumbnail = '';
 						});
-					}
-				});
-			}
-		},
+					});
+				}
+			});
+		}
 	}
+};
 </script>
 
 <style lang="less">
-	.thumbnail{
-		.ivu-tooltip,.ivu-tooltip-rel,img{
-			display: block;
-			width: 100%;
-			height: 100%;
-		}
+.thumbnail {
+	.ivu-tooltip,
+	.ivu-tooltip-rel,
+	img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
 	}
+}
 </style>

@@ -166,7 +166,7 @@
 			loadSlide(where, callback) {
 				var that = this,
 					items = [],
-					assetsUrl = that.config.assets.upload.url;
+					assetsUrl = that.$assets.url;
 				that.$store.dispatch('readSlide', where).then((data) => {
 					for (let i = 0; i < data.length; i++) {
 						let imageSrc = assetsUrl + data[i]['image'];
@@ -189,7 +189,7 @@
 			},
 			appendSlide(data){
 				var that = this,
-					assetsUrl = that.config.assets.upload.url,
+					assetsUrl = that.$assets.url,
 					imageSrc = assetsUrl + data['image'];
 				that.getImgInfo(imageSrc, function(width, height) {
 					let items={

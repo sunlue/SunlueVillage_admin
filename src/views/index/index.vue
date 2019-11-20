@@ -3,7 +3,7 @@
 		<div class="scroll-y">
 			<Row :gutter="10">
 				<Col span="16">
-					<Card class="application col-item">
+					<Card class="application col-item" v-if="false">
 						<p slot="title">{{$t('plugin_manage')}}</p>
 						<plugin></plugin>
 					</Card>
@@ -11,12 +11,12 @@
 						<p slot="title">{{$t('sebsite_visit')}}</p>
 						<v-chart :options="echats.access.traffic" :autoresize="true" />
 					</Card>
-					<Card class="access">
+				</Col>
+				<Col span="8">
+					<Card class="access col-item">
 						<p slot="title">{{$t('user_access_source')}}</p>
 						<v-chart :options="echats.access.referer" :autoresize="true" />
 					</Card>
-				</Col>
-				<Col span="8">
 					<!-- 我的信息 -->
 					<Card class="my_info col-item">
 						<p slot="title">{{$t('my_info')}}【{{userInfo.uniqid}}】</p>

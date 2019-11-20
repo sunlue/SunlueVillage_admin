@@ -42,7 +42,7 @@
 	export default {
 		data() {
 			let that = this,
-				uploadUrl = this.config.assets.upload.url;
+				uploadImage = this.$assets.upload.image;
 			return {
 				model:false,
 				form: {
@@ -62,7 +62,7 @@
 						}]
 					},
 					upload: {
-						url: uploadUrl + '/uploads/image',
+						url: uploadImage,
 						header: {},
 						result: {
 							path: '',

@@ -2,13 +2,13 @@
 	<div class="datagrid">
 		<ButtonGroup :size="buttonSize">
 			<Button :size="buttonSize" type="primary" @click="$emit('create')">{{$t('create')}}</Button>
-			<Button :size="buttonSize" type="primary" @click="readVillageData({page:1})">{{$t('btn_refresh')}}</Button>
+			<Button :size="buttonSize" type="primary" @click="renderVillage()">{{$t('btn_refresh')}}</Button>
 		</ButtonGroup>
 		<Divider size="small" />
 		<div class="datatable">
 			<div class="scroll-y">
 				<Table ref="datatable" size="small" :columns="datagrid.table.columns" :data="datagrid.table.data" :border="true"
-				 :draggable="true" :loading="datagrid.table.loading" @on-selection-change="selectionTable">
+				 :draggable="true" :loading="datagrid.table.loading">
 					<template slot-scope="{ row,index }" slot="type">
 						<template v-if="row.type==1">行政村</template>
 						<template v-else>自然村</template>
@@ -43,41 +43,33 @@
 					<template slot-scope="{ row,index }" slot="action">
 						<ButtonGroup>
 							<Tooltip :content="$t('btn_more')" placement="left">
-								<Button size="small" type="info" to="/village_expand" target="_blank">
+								<Button size="small" type="info" @click="moreVillage(row,index)" target="_blank">
 									<Icon type="ios-more" />
 								</Button>
 							</Tooltip>
-							<Tooltip :content="$t('btn_update')" placement="left">
-								<Button size="small" type="primary" @click="$emit('update',row,index)">
-									<Icon type="md-create" />
-								</Button>
-							</Tooltip>
 							<Tooltip :content="$t('btn_delete')" placement="left">
-								<Button size="small" type="error" @click="deleteArticle(row,index)">
+								<Button size="small" type="error" @click="deleteVillage(row,index)">
 									<Icon type="ios-trash-outline" />
 								</Button>
 							</Tooltip>
 						</ButtonGroup>
 					</template>
 				</Table>
-
 			</div>
 			<Row style="margin-top:10px;">
 				<Col span="12">
-				<Page :total="datagrid.paging.total" :current="datagrid.paging.current" :page-size="datagrid.paging.pageSize"
+				<Page :total="datagrid.paging.total" :current="datagrid.paging.page" :page-size="datagrid.paging.limit"
 				 :show-sizer="true" size="small" @on-change="changePage" @on-page-size-change="changePageSize"></Page>
 				</Col>
 				<Col span="12" class="text-right">
 				共计{{datagrid.paging.total}}条数据，
-				共计{{Math.ceil(datagrid.paging.total/datagrid.paging.pageSize)}}页，
-				当前第{{datagrid.paging.current}}页
+				共计{{Math.ceil(datagrid.paging.total/datagrid.paging.limit)}}页，
+				当前第{{datagrid.paging.page}}页
 				</Col>
 			</Row>
 		</div>
 		<Drawer v-model="reviewContent.show" width="1000" :draggable='true' :title="$t('review')+$t('village_content')">
 			<div v-html="reviewContent.content"></div>
-		</Drawer>
-		<Drawer v-model="expandModel" width="1240" :draggable='true' :title="$t('review')+$t('village_content')">
 		</Drawer>
 	</div>
 </template>
@@ -94,7 +86,7 @@
 				datagrid: {
 					table: {
 						columns: [{
-								width: 50,
+								width: 52,
 								align:'center',
 								type: 'index'
 							}, {
@@ -120,19 +112,22 @@
 								title: that.$t('village_name'),
 								key: 'name',
 								minWidth: 90,
+								align:'center',
 								tooltip: 'true'
 							},
 							{
 								title: that.$t('village_type'),
-								width: 90,
+								width: 104,
 								slot: 'type',
-								align:'center'
+								align:'center',
+								sortable:'true'
 							},
 							{
 								title: that.$t('village_industry'),
-								width: 90,
+								minWidth: 120,
 								key: 'industry',
-								align:'center'
+								align:'center',
+								tooltip: 'true'
 							},
 							{
 								title: '人口',
@@ -144,12 +139,14 @@
 										title: that.$t('man'),
 										width: 72,
 										key: 'registered_population_man',
-										align:'center'
+										align:'center',
+										sortable:'true'
 									},{
 										title: that.$t('woman'),
 										width: 72,
 										key: 'registered_population_man',
-										align:'center'
+										align:'center',
+										sortable:'true'
 									}]
 								},{
 									title: that.$t('permanent_population'),
@@ -158,29 +155,31 @@
 										title: that.$t('man'),
 										width: 72,
 										key: 'permanent_population_man',
-										align:'center'
+										align:'center',
+										sortable:'true'
 									},{
 										title: that.$t('woman'),
 										width: 72,
 										key: 'permanent_population_woman',
-										align:'center'
+										align:'center',
+										sortable:'true'
 									}]
 								}]
 							},
 							{
-								title: that.$t('collective_income'),
-								minWidth: 76,
+								title: that.$t('collective_income')+'(元)',
+								minWidth: 86,
 								key: 'collective_income',
 								align:'center'
 							},{
-								title: that.$t('person_income'),
-								minWidth: 76,
+								title: that.$t('person_income')+'(元)',
+								minWidth: 86,
 								key: 'person_income',
 								align:'center'
 							},
 							{
 								title: that.$t('village_content'),
-								width: 78,
+								width: 86,
 								align: 'center',
 								render: (h, params) => {
 									let that = this;
@@ -200,7 +199,7 @@
 							},
 							{
 								title: that.$t('village_audio'),
-								width: 78,
+								width: 86,
 								align: 'center',
 								render: (h, params) => {
 									let that = this;
@@ -219,7 +218,7 @@
 							},
 							{
 								title: that.$t('village_video'),
-								width: 78,
+								width: 86,
 								align: 'center',
 								render: (h, params) => {
 									let that = this;
@@ -240,37 +239,43 @@
 								title: that.$t('village_show'),
 								width: 90,
 								align: 'center',
-								slot: 'show'
+								slot: 'show',
+								sortable:'true'
 							},
 							{
 								title: that.$t('village_is_top'),
-								width: 62,
+								width: 80,
 								align: 'center',
-								slot: 'is_top'
+								slot: 'is_top',
+								sortable:'true'
 							},
 							{
 								title: that.$t('demonstration'),
-								width: 76,
+								width: 92,
 								align: 'center',
-								slot: 'demonstration'
+								slot: 'demonstration',
+								sortable:'true'
 							},
 							{
 								title: that.$t('advanced'),
-								width: 76,
+								width: 92,
 								align: 'center',
-								slot: 'advanced'
+								slot: 'advanced',
+								sortable:'true'
 							},
 							{
 								title: that.$t('village_recommended'),
-								width: 62,
+								width: 80,
 								align: 'center',
-								slot: 'recommended'
+								slot: 'recommended',
+								sortable:'true'
 							},
 							{
 								title: that.$t('village_hot'),
-								width: 62,
+								width: 80,
 								align: 'center',
-								slot: 'hot'
+								slot: 'hot',
+								sortable:'true'
 							},
 							{
 								title: that.$t('village_sort'),
@@ -285,113 +290,90 @@
 								slot: 'hits'
 							},
 							{
-								title: '',
-								width: 120,
+								width: 82,
 								align: 'center',
 								slot: 'action',
 								fixed: 'right',
-								className: 'col_action'
-							},
+								className:'col_action'
+							}
 						],
 						data: [],
 						loading: false
 					},
 					paging: {
 						total: 0,
-						current: 1,
-						pageSize: 10
+						page: 1,
+						limit: 10
 					}
 				},
 				reviewContent: {
 					show: false,
 					content: ''
-				},
-				expandModel:true,
-				finisUpdate: {
-					data: {},
-					index: ''
 				}
-			}
-		},
-		props: {
-			finisData: {
-				type: Object,
-				default: () => {}
-			},
-			finisDataIndex: {
-				type: String,
-				default: '0'
-			}
-		},
-		watch: {
-			finisData(newValue, oldValue) {
-				newValue.show = newValue.show + '';
-				newValue.comment = newValue.comment + '';
-				newValue.is_top = newValue.is_top + '';
-				newValue.recommended = newValue.recommended + '';
-				newValue.hot = newValue.hot + '';
-				this.finisUpdate.data = newValue;
-			},
-			finisDataIndex(newValue) {
-				this.finisUpdate.index = newValue;
 			}
 		},
 		mounted() {
 			let that = this;
 			this.readVillageData({
-				page: 1
+				page: 1,
+				limit: this.datagrid.paging.limit
 			}, function(result) {
 				that.datagrid.paging.total = result.total;
-				that.datagrid.paging.current = result.current_page;
+				that.datagrid.paging.page = result.current_page;
 			})
 		},
 		methods: {
 			changePage(pageNumber) {
-				this.readVillageData({
-					page: pageNumber
-				})
+				this.datagrid.paging.page = pageNumber
+				this.readVillageData()
 			},
 			changePageSize(PageSize) {
-				this.datagrid.paging.pageSize = PageSize;
-				this.readVillageData({
-					page: 1,
-					limit: this.datagrid.paging.pageSize,
-				})
+				this.datagrid.paging.page = 1
+				this.datagrid.paging.limit = PageSize;
+				this.readVillageData()
 			},
-			searchArticle(where) {
-				where['page'] = 1;
+			searchVillage(where) {
 				this.readVillageData(where)
+			},
+			renderVillage(){
+				this.readVillageData()
 			},
 			readVillageData(where, callback) {
 				this.datagrid.table.loading = true;
-				this.$store.dispatch('readVillageData', where).then((result) => {
+				this.$store.dispatch('readVillageData', Object.assign({
+					page:this.datagrid.paging.page,
+					limit:this.datagrid.paging.limit
+				},where)).then((result) => {
 					this.datagrid.table.data = result.data;
 					this.datagrid.table.loading = false;
 					typeof(callback) == 'function' ? callback(result): '';
 				});
 			},
-			createArticle(data) {
+			createVillage(data) {
 				this.datagrid.table.data.push(data);
 			},
-			updateArticle(row, index) {
-				this.$emit('update', row, index)
-			},
-			deleteArticle(row, index) {
+			deleteVillage(row, index) {
 				let that = this;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
 					onOk: function() {
-						that.$store.dispatch('deleteArticleList', {
+						that.$store.dispatch('deleteVillageData', {
 							uniqid: row.uniqid,
 						}).then((result) => {
 							that.datagrid.table.data.splice(index, 1);
+							that.datagrid.paging.total-=1
 						});
 					}
 				});
 			},
-			selectionTable() {},
-			batchDeleteArticle() {},
+			moreVillage(data,index) {
+				let routeUrl = this.$router.resolve({
+					name: "village_unfold",
+					query: {unique:data.uniqid}
+				});
+				window.open(routeUrl .href, '_blank');
+			},
 			uploadImage(params, result) {
 				let that = this,
 					index = params.index,
@@ -429,7 +411,7 @@
 				})
 			},
 			handleField(uniqid, field, value, callback) {
-				this.$store.dispatch('updateArticleList', {
+				this.$store.dispatch('updateVillageData', {
 					uniqid: uniqid,
 					field: field,
 					value: value
@@ -439,16 +421,8 @@
 			},
 			InputNumber(row, index, field, value) {
 				this.handleField(row.uniqid, field, value);
-			},
-			exportCsv() {
-				this.$refs.datatable.exportCsv({
-					filename: this.$t('article_list'),
-					original: true,
-					columns: this.datagrid.table.columns,
-					data: this.datagrid.table.data
-				})
 			}
-		},
+		}
 	}
 </script>
 <style lang="less">

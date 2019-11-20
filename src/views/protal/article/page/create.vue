@@ -205,7 +205,7 @@
 		},
 		data() {
 			let that=this,
-				upload=this.config.assets.upload;
+				upload=this.$assets.upload;
 			return {
 				uploadImagesList:[],
 				uploadFileList:[],

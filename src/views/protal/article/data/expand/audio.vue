@@ -1,33 +1,36 @@
 <template>
 	<div>
-		<Upload  v-if="!linkpath" :action="upload.audio.url" :show-upload-list="false"
-		accept="audio/mpeg"
-		:format="['mp3','mp4']" name="file" :on-success="uploadAudioSuccess"
+		<Upload  v-if="!audio" :action="$upload.audio" :show-upload-list="false"
+		accept="audio/mpeg" :format="['mp3','mp4']" name="file" 
+		:on-success="uploadAudioSuccess"
 		:on-error="uploadAudioError" :on-progress="uploadAudioProgress"
 		:on-format-error="uploadAudioFormatError">
 			<Button type="info" size="small">{{$t('upload')}}</Button>
 		</Upload>
-		<Button type="info" size="small" @click="modal.show=true" v-if="linkpath">{{$t('review')}}</Button>
-		<Modal v-model="modal.show" :footer-hide="true" class="review" v-if="linkpath">
-			<p slot="header">{{$t('review')}}</p>
-			<Row style="margin: 0 5px 10px 5px;">
-				<Col span="12">
-					<Upload :action="upload.audio.url" :show-upload-list="false"
-					:format="['mp3','mp4']" name="file" :on-success="uploadAudioSuccess"
-					:on-error="uploadAudioError" :on-progress="uploadAudioProgress"
-					:on-format-error="uploadAudioFormatError">
-						<Button type="primary" long>{{$t('update')}}</Button>
-					</Upload>
-				</Col>
-				<Col span="12">
-					<Button type="error" long @click="deleteAudio">{{$t('delete')}}</Button>
-				</Col>
-			</Row>
-			<aplayer :music="{title: music.title,artist: music.artist || ' ',src: music.url}"/>
-		</Modal>
-		<Modal v-model="slider.show" :closable="false" :footer-hide="true" :mask-closable="false">
-			<Slider v-model="slider.value" :show-tip="slider.tip"></Slider>
-		</Modal>
+		<template v-else>
+			<Button type="info" size="small" @click="modal.show=true">{{$t('review')}}</Button>
+			<Modal v-model="modal.show" :footer-hide="true" class="review">
+				<p slot="header">{{$t('review')}}</p>
+				<Row style="margin: 0 5px 10px 5px;">
+					<Col span="12">
+						<Upload :action="$upload.audio" :show-upload-list="false"
+						:format="['mp3','mp4']" name="file" :on-success="uploadAudioSuccess"
+						:on-error="uploadAudioError" :on-progress="uploadAudioProgress"
+						:on-format-error="uploadAudioFormatError">
+							<Button type="primary" long>{{$t('update')}}</Button>
+						</Upload>
+					</Col>
+					<Col span="12">
+						<Button type="error" long @click="deleteAudio">{{$t('delete')}}</Button>
+					</Col>
+				</Row>
+				<aplayer :music="music"/>
+			</Modal>
+			<Modal v-model="slider.show" :closable="false" :footer-hide="true" :mask-closable="false">
+				<Slider v-model="slider.value" :show-tip="slider.tip"></Slider>
+			</Modal>
+		
+		</template>
 	</div>
 </template>
 
@@ -39,18 +42,11 @@
 			Aplayer
 		},
 		data() {
-			let uploadAudio=this.config.assets.upload.audio;
 			return {
 				music:{
+					src:'',
 					title:'',
-					url:'',
 					artist:''
-				},
-				linkpath:'',
-				upload:{
-					audio:{
-						url:uploadAudio,
-					}
 				},
 				modal:{
 					show:false
@@ -75,11 +71,10 @@
 		mounted(){
 			this.$nextTick(function(){
 				if (this.audio!='') {
-					let uploadUrl=this.config.assets.upload.url;
-					this.music.url=uploadUrl+this.audio;
+					let assetsUrl=this.$assets.url;
+					this.music.src=assetsUrl+this.audio;
 					this.music.title=this.data.title;
 					this.music.pic=this.data.thumbnail;
-					this.linkpath=this.audio;
 				}
 			})
 		},
@@ -95,10 +90,15 @@
 				}
 			},
 			uploadAudioSuccess(response){
-				this.$emit('uploadSuccess',response.data);
-				let uploadUrl=this.config.assets.upload.url;
-				this.music.url=uploadUrl+response.data.link;
-				this.linkpath=response.data.link;
+				if(response.code==200){
+					this.$emit('uploadSuccess',response.data);
+					let assetsUrl=this.$assets.url;
+					this.music.url=assetsUrl+response.data.link;
+					this.audio=response.data.link;
+					this.$Message.success('success');
+				}else{
+					this.$Message.error(response.info);
+				}
 			},
 			uploadAudioError(error){
 				console.error(error)
@@ -108,8 +108,7 @@
 			},
 			deleteAudio(){
 				let that=this,
-					uniqid=this.data.uniqid,
-					uploadUrl=this.config.assets.upload.url;
+					uniqid=that.data.uniqid;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
@@ -119,17 +118,17 @@
 							field:'audio',
 							value:''
 						}).then(() => {
-							axios.delete(uploadUrl+'delete',{
-								data:{path:that.linkpath}
+							axios.delete(that.$assets.delete,{
+								data:{path:that.audio}
 							}).then(()=>{
-								that.linkpath='';
+								that.audio='';
 								that.modal.show=false;
 							})
 						});
 					}
 				});
 			}
-		},
+		}
 	}
 </script>
 

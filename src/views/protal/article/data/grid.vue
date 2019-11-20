@@ -155,7 +155,7 @@
 							},
 							{
 								title: that.$t('article_audio'),
-								width: 90,
+								width: 92,
 								align: 'center',
 								render: (h, params) => {
 									let that = this;
@@ -174,7 +174,7 @@
 							},
 							{
 								title: that.$t('article_video'),
-								width: 90,
+								width: 92,
 								align: 'center',
 								render: (h, params) => {
 									let that = this;
@@ -259,13 +259,13 @@
 							},
 							{
 								title: that.$t('article_link'),
-								width: 90,
+								width: 92,
 								align: 'center',
 								slot: 'link'
 							},
 							{
 								title: '',
-								width: 78,
+								width: 82,
 								align: 'center',
 								slot: 'action',
 								fixed: 'right',

@@ -114,7 +114,7 @@
 								</div>
 							</Upload>
 							<div class="preview" v-if="upload.result.path">
-								<img :src="upload.result.path" :alt="upload.result.name" />
+								<img :src="upload.result.url" :alt="upload.result.name" />
 								<div class="deleted">
 									<Button type="error">{{$t('delete')}}</Button>
 								</div>
@@ -213,7 +213,7 @@
 		},
 		data() {
 			let that=this,
-				uploadImage=this.config.assets.upload.image;
+				uploadImage=this.$assets.upload.image;
 			return {
 				form:{
 					data:{
@@ -308,8 +308,9 @@
 						'tag':this.form.tag,
 						'thumbnail':this.upload.result.path
 					});
+					console.log(data)
 				this.formValidate('formVal',function(){
-					that.$store.dispatch('createVillage',data).then((result) => {
+					that.$store.dispatch('createVillageData',data).then((result) => {
 						that.$emit('submit',result);
 						that.handleReset();
 					});

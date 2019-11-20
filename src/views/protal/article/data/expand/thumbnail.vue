@@ -1,9 +1,9 @@
 <template>
 	<div class="thumbnail">
-		<Tooltip :content="$t('tips_dblclick_delte')" placement="right">
-			<img v-if="linkpath" @dblclick="deleteImage" :src="thumbnail" />
+		<Tooltip :content="$t('tips_dblclick_delte')" placement="right" v-if="thumbnail">
+			<img @dblclick="deleteImage" :src="$assets.url+thumbnail" />
 		</Tooltip>
-		<Upload  v-if="!linkpath" :action="upload.url" :show-upload-list="false"
+		<Upload  v-else :action="$upload.image" :show-upload-list="false"
 			:format="['png','jpg','jpeg','gif']" name="file" :on-success="uploadThumbSuccess"
 			:on-error="uploadThumbError" :on-progress="uploadThumbProgress"
 			:on-format-error="uploadThumbFormatError">
@@ -19,12 +19,7 @@
 	import axios from 'axios'
 	export default{
 		data() {
-			let uploadImage=this.config.assets.upload.image;
 			return {
-				linkpath:'',
-				upload:{
-					url:uploadImage,
-				},
 				slider:{
 					show:false,
 					value:0,
@@ -42,11 +37,6 @@
 				default:''
 			}
 		},
-		mounted(){
-			let uploadUrl=this.config.assets.upload.url;
-			this.linkpath=this.thumbnail;
-			this.upload.path=uploadUrl+this.thumbnail;
-		},
 		methods: {
 			uploadThumbProgress(event ){
 				this.slider.value=parseInt((event.loaded/event.total)*100);
@@ -61,10 +51,11 @@
 			uploadThumbSuccess(response){
 				if(response.code!=200){
 					this.$Message.error(response.info);
+				}else{
+					this.$emit('uploadSuccess',response.data);
+					this.thumbnail=response.data.link;
+					this.$Message.success('success');
 				}
-				this.$emit('uploadSuccess',response.data);
-				this.linkpath=response.data.link;
-				this.upload.path=response.data.url+response.data.link;
 			},
 			uploadThumbError(error){
 				console.error(error)
@@ -74,8 +65,7 @@
 			},
 			deleteImage(){
 				let that=this,
-					uniqid=that.data.uniqid,
-					uploadUrl=that.config.assets.upload.url;
+					uniqid=that.data.uniqid;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
@@ -85,10 +75,10 @@
 							field:'thumbnail',
 							value:''
 						}).then((result) => {
-							axios.delete(uploadUrl+'delete',{
-								data:{path:that.linkpath}
+							axios.delete(this.$assets.delete,{
+								data:{path:that.thumbnail}
 							}).then(()=>{
-								that.linkpath='';
+								that.thumbnail='';
 							})
 						});
 					}

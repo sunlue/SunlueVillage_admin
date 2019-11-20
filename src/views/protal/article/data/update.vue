@@ -13,101 +13,104 @@
 				<TabPane :label="$t('basis_info')" name="tab_basis">
 					<Row>
 						<Col span="15">
-						<FormItem :label="$t('article_title')" prop="title">
-							<Input type="text" v-model="form.data.title" :placeholder="$t('please')+$t('enter')+$t('article_title')"></Input>
-						</FormItem>
-						<FormItem :label="$t('article_type')" prop="type">
-							<Button type="default" long @click="form.treeSelect.show=true">
-								<span v-if="!form.data.type">
-									{{$t('please')+$t('select')+$t('article_type')}}
-								</span>
-								<span v-else>{{$t('selected')}}【{{form.treeSelect.selected.name}}】</span>
-							</Button>
-						</FormItem>
-						<FormItem :label="$t('article_excerpt')" prop="excerpt">
-							<Input type="textarea" v-model="form.data.excerpt" :placeholder="$t('please')+$t('enter')+$t('article_title')"></Input>
-						</FormItem>
-						<FormItem :label="$t('article_source')" prop="source">
-							<Input type="text" v-model="form.data.source"></Input>
-						</FormItem>
-						<FormItem :label="$t('article_link')" prop="link">
-							<Input type="text" v-model="form.data.link">
-							<span slot="prepend">http://&nbsp;||&nbsp;https://</span>
-							</Input>
-						</FormItem>
-						<FormItem :label="$t('article_audio')" prop="audio">
-							<Input type="text" v-model="form.data.audio"></Input>
-						</FormItem>
-						<FormItem :label="$t('article_video')" prop="video">
-							<Input type="text" v-model="form.data.video"></Input>
-						</FormItem>
-						<div style="display: flex;justify-content : space-between;">
-							<FormItem :label="$t('article_sort')" prop="sort">
-								<InputNumber :min="0" v-model="form.data.sort"></InputNumber>
+							<FormItem label="所属乡村">
+								<Cascader :data="region" v-model="form.data.village_id" clearable filterable placeholder="请输入或选择村落名称"></Cascader>
 							</FormItem>
-							<FormItem :label="$t('article_hits')" prop="hits">
-								<InputNumber :min="0" v-model="form.data.hits"></InputNumber>
+							<FormItem :label="$t('article_title')" prop="title">
+								<Input type="text" v-model="form.data.title" :placeholder="$t('please')+$t('enter')+$t('article_title')"></Input>
 							</FormItem>
-							<FormItem :label="$t('article_favorites')" prop="favorites">
-								<InputNumber :min="0" v-model="form.data.favorites"></InputNumber>
+							<FormItem :label="$t('article_type')" prop="type">
+								<Button type="default" long @click="form.treeSelect.show=true">
+									<span v-if="!form.data.type">
+										{{$t('please')+$t('select')+$t('article_type')}}
+									</span>
+									<span v-else>{{$t('selected')}}【{{form.treeSelect.selected.name}}】</span>
+								</Button>
 							</FormItem>
-							<FormItem :label="$t('article_like')" prop="like">
-								<InputNumber :min="0" v-model="form.data.like"></InputNumber>
+							<FormItem :label="$t('article_excerpt')" prop="excerpt">
+								<Input type="textarea" v-model="form.data.excerpt" :placeholder="$t('please')+$t('enter')+$t('article_title')"></Input>
 							</FormItem>
-							<FormItem :label="$t('article_comment_count')" prop="comment_count">
-								<InputNumber :min="0" v-model="form.data.comment_count"></InputNumber>
+							<FormItem :label="$t('article_source')" prop="source">
+								<Input type="text" v-model="form.data.source"></Input>
 							</FormItem>
-						</div>
+							<FormItem :label="$t('article_link')" prop="link">
+								<Input type="text" v-model="form.data.link">
+								<span slot="prepend">http://&nbsp;||&nbsp;https://</span>
+								</Input>
+							</FormItem>
+							<FormItem :label="$t('article_audio')" prop="audio">
+								<Input type="text" v-model="form.data.audio"></Input>
+							</FormItem>
+							<FormItem :label="$t('article_video')" prop="video">
+								<Input type="text" v-model="form.data.video"></Input>
+							</FormItem>
+							<div style="display: flex;justify-content : space-between;">
+								<FormItem :label="$t('article_sort')" prop="sort">
+									<InputNumber :min="0" v-model="form.data.sort"></InputNumber>
+								</FormItem>
+								<FormItem :label="$t('article_hits')" prop="hits">
+									<InputNumber :min="0" v-model="form.data.hits"></InputNumber>
+								</FormItem>
+								<FormItem :label="$t('article_favorites')" prop="favorites">
+									<InputNumber :min="0" v-model="form.data.favorites"></InputNumber>
+								</FormItem>
+								<FormItem :label="$t('article_like')" prop="like">
+									<InputNumber :min="0" v-model="form.data.like"></InputNumber>
+								</FormItem>
+								<FormItem :label="$t('article_comment_count')" prop="comment_count">
+									<InputNumber :min="0" v-model="form.data.comment_count"></InputNumber>
+								</FormItem>
+							</div>
 						</Col>
 						<Col span="8" offset="1">
-						<Upload ref="upload" type="drag" accept="image" name="file" :show-upload-list="false" :action="upload.url"
-						 :format="['jpg','jpeg','png']" :headers="upload.headers" :on-success="uploadSuccess">
-							<div style="padding: 16px 0">
-								<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-								<p>{{$t('upload_drag')}}</p>
+							<Upload ref="upload" type="drag" accept="image" name="file" :show-upload-list="false" 
+							:action="$upload.image" :format="['jpg','jpeg','png']" :on-success="uploadSuccess">
+								<div style="padding: 16px 0">
+									<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+									<p>{{$t('upload_drag')}}</p>
+								</div>
+							</Upload>
+							<div class="preview" v-if="form.data.thumbnail">
+								<img :src="$assets.url+form.data.thumbnail" :alt="form.data.title" />
+								<div class="deleted">
+									<Button type="error">{{$t('delete')}}</Button>
+								</div>
 							</div>
-						</Upload>
-						<div class="preview" v-if="upload.result.url">
-							<img :src="upload.result.url" :alt="upload.result.name" />
-							<div class="deleted">
-								<Button type="error">{{$t('delete')}}</Button>
-							</div>
-						</div>
-						<FormItem :label-width="0">
-							<div style="display: flex;justify-content : space-around;">
-								<FormItem prop="show">
-									<i-switch size="large" v-model="form.data.show" true-value="1" false-value="0">
-										<span slot="open">{{$t('article_show')}}</span>
-										<span slot="close">{{$t('article_hide')}}</span>
-									</i-switch>
-								</FormItem>
-								<FormItem>
-									<Checkbox v-model="form.data.quality" true-value="1" false-value="0">
-										<span>{{$t('article_quality')}}</span>
-									</Checkbox>
-								</FormItem>
-								<FormItem>
-									<Checkbox v-model="form.data.comment" true-value="1" false-value="0">
-										<span>{{$t('article_comment')}}</span>
-									</Checkbox>
-								</FormItem>
-								<FormItem>
-									<Checkbox v-model="form.data.is_top" true-value="1" false-value="0">
-										<span>{{$t('article_is_top')}}</span>
-									</Checkbox>
-								</FormItem>
-								<FormItem>
-									<Checkbox v-model="form.data.recommended" true-value="1" false-value="0">
-										<span>{{$t('article_recommended')}}</span>
-									</Checkbox>
-								</FormItem>
-								<FormItem>
-									<Checkbox v-model="form.data.hot" true-value="1" false-value="0">
-										<span>{{$t('article_hot')}}</span>
-									</Checkbox>
-								</FormItem>
-							</div>
-						</FormItem>
+							<FormItem :label-width="0">
+								<div style="display: flex;justify-content : space-around;">
+									<FormItem prop="show">
+										<i-switch size="large" v-model="form.data.show" true-value="1" false-value="0">
+											<span slot="open">{{$t('article_show')}}</span>
+											<span slot="close">{{$t('article_hide')}}</span>
+										</i-switch>
+									</FormItem>
+									<FormItem>
+										<Checkbox v-model="form.data.quality" true-value="1" false-value="0">
+											<span>{{$t('article_quality')}}</span>
+										</Checkbox>
+									</FormItem>
+									<FormItem>
+										<Checkbox v-model="form.data.comment" true-value="1" false-value="0">
+											<span>{{$t('article_comment')}}</span>
+										</Checkbox>
+									</FormItem>
+									<FormItem>
+										<Checkbox v-model="form.data.is_top" true-value="1" false-value="0">
+											<span>{{$t('article_is_top')}}</span>
+										</Checkbox>
+									</FormItem>
+									<FormItem>
+										<Checkbox v-model="form.data.recommended" true-value="1" false-value="0">
+											<span>{{$t('article_recommended')}}</span>
+										</Checkbox>
+									</FormItem>
+									<FormItem>
+										<Checkbox v-model="form.data.hot" true-value="1" false-value="0">
+											<span>{{$t('article_hot')}}</span>
+										</Checkbox>
+									</FormItem>
+								</div>
+							</FormItem>
 						</Col>
 					</Row>
 				</TabPane>
@@ -169,12 +172,13 @@
 			Tinymce
 		},
 		data() {
-			let that = this,
-				uploadUrl = this.config.assets.upload.url;
+			let that = this
 			return {
 				form: {
 					data: {
+						village_id:[],
 						title: '',
+						thumbnail:'',
 						type: '',
 						excerpt: '',
 						source: '',
@@ -223,15 +227,7 @@
 					}
 				},
 				tabs: 'tab_basis',
-				upload: {
-					url: uploadUrl + '/uploads/image',
-					header: {},
-					result: {
-						path: '',
-						name: '',
-						url: ''
-					}
-				},
+				region:[]
 			}
 		},
 		props: {
@@ -246,17 +242,15 @@
 		},
 		watch: {
 			updateData(newValue) {
-				let tag = [],
-					uploadUrl = this.config.assets.upload.url;
+				let tag = []
 				newValue.show = newValue.show + '';
+				newValue.village_id = [newValue.village_id];
 				newValue.comment = newValue.comment + '';
 				newValue.is_top = newValue.is_top + '';
 				newValue.recommended = newValue.recommended + '';
 				newValue.hot = newValue.hot + '';
 				newValue.quality = newValue.quality + '';
 				this.form.data = newValue;
-				this.upload.result.path = newValue.thumbnail;
-				this.upload.result.url = uploadUrl + newValue.thumbnail;
 				this.form.treeSelect.selected.name = newValue.type_text;
 				this.form.treeSelect.selected.uniqid = newValue.type;
 				this.$refs.content.setContent(newValue.content)
@@ -271,11 +265,26 @@
 				this.form.treeSelect.data = newValue;
 			}
 		},
+		mounted() {
+			let that=this;
+			this.$store.dispatch('readVillageData').then(result=>{
+				result.map((item,index)=>{
+					if(item.region_text){
+						that.region.push({
+							label:item.region_text,
+							value:item.uniqid
+						})
+					}
+				})
+			})
+		},
 		methods: {
 			uploadSuccess(response) {
-				this.upload.result.path = response.data.link;
-				this.upload.result.url = response.data.url + response.data.link;
-				this.upload.result.name = response.data.name;
+				if(response.code==200){
+					this.form.data.thumbnail=response.data.link;
+				}else{
+					this.$Message.error(response.info)
+				}
 			},
 			handleSelectArticleType(selectArray, item) {
 				this.form.data.type = item.uniqid;
@@ -301,7 +310,7 @@
 				let that = this,
 					data = Object.assign(this.form.data, {
 						'tag': this.form.tag,
-						'thumbnail': this.upload.result.path,
+						'village_id':this.form.data.village_id[0]
 					});
 				this.formValidate('formVal', function() {
 					that.$store.dispatch('updateArticleList', data).then((result) => {

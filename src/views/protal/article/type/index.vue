@@ -11,7 +11,7 @@
 			</Split>
 		</div>
 		<Modal v-model="modal" :mask-closable="false" :title=" $t(form.action) +$t('article_type')" :footer-hide="false" :closable="false">
-			<Form ref="articleTypeForm" :model="form.data" :rules="form.rule" :label-width="100">
+			<Form ref="articleTypeForm" :model="form.data" :rules="form.rule" :label-width="120">
 				<FormItem :label="$t('article_type_name')" prop="name">
 					<Input v-model="form.data.name" :placeholder="$t('please')+$t('enter')+$t('article_type_name')"></Input>
 				</FormItem>

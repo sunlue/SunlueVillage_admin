@@ -181,7 +181,8 @@ const router = {
 			language: 'plugin_manage',
 			title: '应用管理',
 			is_login: true,
-			children: false
+			children: false,
+			display: 'hidden'
 		},
 		children: [{
 			path: 'config',

@@ -5,8 +5,7 @@
 <script>
 	export default {
 		data() {
-			let that = this,
-				uploadUrl = this.config.assets.upload.url;
+			let that = this;
 			return {
 				data: [{
 					expand: true,

@@ -1,22 +1,22 @@
 module.exports = {
-    devServer: {
-		proxy: 'http://ebyte.api.sunlue.cn/',
+	devServer: {
+		proxy: 'http://api.village.sunlue.io/',
 		overlay: {
-            warnings: false,
-            errors: false
-        },
+			warnings: false,
+			errors: false
+		},
 	},
 
-    pages: {
+	pages: {
 		index: {
 			entry: 'src/main.js',
 			title: '涪城区数字乡村信息管理平台',
 		}
 	},
 
-    productionSourceMap: false,
+	productionSourceMap: false,
 
-    configureWebpack: (config) => {
+	configureWebpack: (config) => {
 		if (process.env.NODE_ENV === 'production') {
 			// 为生产环境修改配置...
 			config.mode = 'production'
@@ -26,5 +26,5 @@ module.exports = {
 		}
 	},
 
-    lintOnSave: false
+	lintOnSave: false
 }

@@ -42,7 +42,7 @@
 	export default {
 		data() {
 			let that = this;
-			let uploadImg = this.config.assets.upload.image;
+			let uploadImg = this.$assets.upload.image;
 			return {
 				upload: {
 					linkpath: '',

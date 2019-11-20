@@ -11,7 +11,7 @@
 		</div>
 		<Modal v-model="modal" :mask-closable="false" :title=" $t(form.action) +$t('nav')" :footer-hide="false" 
 			:closable="false" :width="600" :styles="{'top':'50px'}" tag="protal_nav">
-			<Form ref="navForm" :model="form.data" :rules="form.rule" :label-width="100">
+			<Form ref="navForm" :model="form.data" :rules="form.rule" :label-width="80">
 				<FormItem :label="$t('parent_nav')">
 					<Input v-model="rootData.title" readonly="readonly"></Input>
 				</FormItem>
@@ -20,7 +20,7 @@
 				</FormItem>
 				<FormItem :label="$t('nav_url')">
 					<Row>
-						<Col span="4">
+						<Col span="5">
 						<RadioGroup v-model="form.data.type" vertical @on-change="changeType">
 							<Radio label="1">
 								<span>{{$t('article_link')}}</span>
@@ -33,7 +33,7 @@
 							</Radio>
 						</RadioGroup>
 						</Col>
-						<Col span="20">
+						<Col span="19">
 						<Input v-model="form.data.url" :placeholder="$t('please')+$t('enter')+$t('nav_url')" v-if="form.data.type=='1'"></Input>
 						<Input :placeholder="$t('please')+$t('enter')+$t('nav_url')" v-if="form.data.type!='1'"></Input>
 						

@@ -36,7 +36,7 @@
 		components: {
 		},
 		data() {
-			let uploadVideo=this.config.assets.upload.video;
+			let uploadVideo=this.$assets.upload.video;
 			return {
 				linkpath:'',
 				upload:{
@@ -66,9 +66,9 @@
 		mounted(){
 			this.$nextTick(function(){
 				if (this.video!='') {
-					let uploadUrl=this.config.assets.upload.url;
+					let assetsUrl=this.$assets.url;
 					this.linkpath=this.video;
-					this.upload.path=uploadUrl+this.video;
+					this.upload.path=assetsUrl+this.video;
 				}
 			})
 		},
@@ -96,8 +96,7 @@
 			},
 			deleteVideo(){
 				let that=this,
-					uniqid=that.data.uniqid,
-					uploadUrl=that.config.assets.upload.url;
+					uniqid=that.data.uniqid;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
@@ -107,7 +106,7 @@
 							field:'video',
 							value:''
 						}).then((result) => {
-							axios.delete(uploadUrl+'delete',{
+							axios.delete(that.$assets.delete,{
 								data:{path:that.linkpath}
 							}).then(()=>{
 								that.linkpath='';

@@ -11,13 +11,12 @@ export default {
 	},
 	assets: {
 		url: assetsUrl,
+		delete: assetsUrl + 'assets/delete',
 		upload: {
-			url: assetsUrl,
-			image: assetsUrl + 'uploads/image',
-			file: assetsUrl + 'uploads/file',
-			audio: assetsUrl + 'uploads/audio',
-			video: assetsUrl + 'uploads/video'
+			image: assetsUrl + 'assets/upload/image',
+			file: assetsUrl + 'assets/upload/file',
+			audio: assetsUrl + 'assets/upload/audio',
+			video: assetsUrl + 'assets/upload/video'
 		},
-		delete: assetsUrl + 'delete'
 	}
 }

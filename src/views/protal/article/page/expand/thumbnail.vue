@@ -1,7 +1,7 @@
 <template>
 	<div class="thumbnail">
 		<Tooltip :content="$t('tips_dblclick_delte')" placement="right">
-			<img v-if="linkpath" @dblclick="deleteImage" :src="thumbnail" />
+			<img v-if="linkpath" @dblclick="deleteImage" :src="upload.path" />
 		</Tooltip>
 		<Upload  v-if="!linkpath" :action="upload.url" :show-upload-list="false"
 			:format="['png','jpg','jpeg','gif']" name="file" :on-success="uploadThumbSuccess"
@@ -19,7 +19,7 @@
 	import axios from 'axios'
 	export default{
 		data() {
-			let uploadImage=this.config.assets.upload.image;
+			let uploadImage=this.$assets.upload.image;
 			return {
 				linkpath:'',
 				upload:{
@@ -43,9 +43,9 @@
 			}
 		},
 		mounted(){
-			let uploadUrl=this.config.assets.upload.url;
+			let assetsUrl=this.$assets.url;
 			this.linkpath=this.thumbnail;
-			this.upload.path=uploadUrl+this.thumbnail;
+			this.upload.path=assetsUrl+this.thumbnail;
 		},
 		methods: {
 			uploadThumbProgress(event ){
@@ -74,8 +74,7 @@
 			},
 			deleteImage(){
 				let that=this,
-					uniqid=that.data.uniqid,
-					uploadUrl=that.config.assets.upload.url;
+					uniqid=that.data.uniqid;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
@@ -85,7 +84,7 @@
 							field:'thumbnail',
 							value:''
 						}).then((result) => {
-							axios.delete(uploadUrl+'delete',{
+							axios.delete(that.$assets.delete,{
 								data:{path:that.linkpath}
 							}).then(()=>{
 								that.linkpath='';

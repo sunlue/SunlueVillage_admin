@@ -25,7 +25,7 @@
 			return {
 				columns: [{
 					type: 'index',
-					width: 50,
+					width: 56,
 					align:'center'
 				}, {
 					key: 'uniqid',
@@ -34,7 +34,7 @@
 					key: 'userid',
 					title: that.$t('user_number')
 				}, {
-					width:88,
+					width:96,
 					align:'center',
 					key: 'account',
 					title: that.$t('user_account')
@@ -49,17 +49,17 @@
 					key: 'nickname',
 					title: that.$t('user_nickname')
 				}, {
-					width:150,
+					width:180,
 					align:'center',
 					key: 'login_time',
 					title: that.$t('user_login_time')
 				}, {
-					width:150,
+					width:180,
 					align:'center',
 					key: 'exit_time',
 					title: that.$t('user_exit_time')
 				},{
-					width:88,
+					width:96,
 					align:'center',
 					key: 'date_diff',
 					fixed:'right',
@@ -75,7 +75,7 @@
 				paging: {
 					total: 0,
 					page: 1,
-					limit: 10
+					limit: 20
 				}
 			}
 		},

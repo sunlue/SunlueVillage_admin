@@ -1,5 +1,6 @@
 import routes from './router.js'
 import plugin from './plugin.js'
+import village from './village.js'
 
 export const pages = [{
 	path: '/login',
@@ -30,13 +31,5 @@ export const pages = [{
 			}
 		}]
 	}]
-},{
-	path: '/village_expand',
-	name: 'village_expand',
-	component: () => import('@/views/village/expand.vue'),
-	meta: {
-		is_login: true,
-		display: 'hidden'
-	}
-}, routes, plugin]
+}, village, routes, plugin]
 export default pages

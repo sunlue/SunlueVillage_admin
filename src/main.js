@@ -4,15 +4,17 @@ import store from './store'
 //读取配置管理
 import config from './config'
 Vue.prototype.config = config;
+Vue.prototype.$assets = config.assets;
+Vue.prototype.$upload = config.assets.upload;
 //路由管理
 import router from './router'
 //iview框架
 
-import ViewUI from 'view-design';
-// import 'view-design/dist/styles/iview.css';
+import iView from 'view-design';
+import 'view-design/dist/styles/iview.css';
 
 // import iView from 'iview'
-import 'iview/dist/styles/iview.css';
+// import 'iview/dist/styles/iview.css';
 
 //图表插件
 import ECharts from 'vue-echarts'
@@ -27,7 +29,7 @@ import i18n from './locale'
 import App from './App.vue'
 
 
-Vue.use(ViewUI, {
+Vue.use(iView, {
 	transfer: true,
 	i18n: (key, value) => i18n.t(key, value)
 });

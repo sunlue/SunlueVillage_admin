@@ -13,6 +13,9 @@
 				<TabPane :label="$t('basis_info')" name="tab_basis">
 					<Row>
 						<Col span="15">
+							<FormItem label="所属乡村">
+								<Cascader :data="region" v-model="form.data.village_id" clearable filterable placeholder="请输入或选择村落名称"></Cascader>
+							</FormItem>
 							<FormItem :label="$t('article_title')" prop="title">
 								<Input type="text" v-model="form.data.title" :placeholder="$t('please')+$t('enter')+$t('article_title')"></Input>
 							</FormItem>
@@ -60,15 +63,15 @@
 							</div>
 						</Col>
 						<Col span="8" offset="1">
-							 <Upload ref="upload" type="drag" accept="image" name="file":show-upload-list="false" :action="upload.url" 
-								:format="['jpg','jpeg','png']" :headers="upload.headers" :on-success="uploadSuccess">
+							 <Upload ref="upload" type="drag" accept="image" name="file":show-upload-list="false" 
+								:action="$upload.image" :format="['jpg','jpeg','png']" :on-success="uploadSuccess">
 								<div style="padding: 16px 0">
 									<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
 									<p>{{$t('upload_drag')}}</p>
 								</div>
 							</Upload>
-							<div class="preview" v-if="upload.result.path">
-								<img :src="upload.result.path" :alt="upload.result.name" />
+							<div class="preview" v-if="form.data.thumbnail">
+								<img :src="$assets.url+form.data.thumbnail" :alt="form.data.title" />
 								<div class="deleted">
 									<Button type="error">{{$t('delete')}}</Button>
 								</div>
@@ -180,12 +183,13 @@
 			}
 		},
 		data() {
-			let that=this,
-				uploadUrl=this.config.assets.upload.url;
+			let that=this
 			return {
 				form:{
 					data:{
+						village_id:[],
 						title:'',
+						thumbnail:'',
 						type:'',
 						excerpt:'',
 						source:'',
@@ -233,21 +237,29 @@
 					}
 				},
 				tabs:'tab_basis',
-				upload: {
-					url: uploadUrl+'/uploads/image',
-					header: {},
-					result:{
-						path: '',
-						name: ''
-					}
-				},
+				region:[]
 			}
+		},
+		mounted() {
+			let that=this;
+			this.$store.dispatch('readVillageData').then(result=>{
+				result.map((item,index)=>{
+					if(item.region_text){
+						that.region.push({
+							label:item.region_text,
+							value:item.uniqid
+						})
+					}
+				})
+			})
 		},
 		methods: {
 			uploadSuccess(response){
-				this.upload.result.path = response.data.link;
-				this.upload.result.url = response.data.url+response.data.link;
-				this.upload.result.name = response.data.name;
+				if(response.code==200){
+					this.form.data.thumbnail=response.data.link;
+				}else{
+					this.$Message.error(response.info)
+				}
 			},
 			handleSelectArticleType (selectArray,item) {
 				this.form.treeSelect.selected.uniqid=item.uniqid;
@@ -270,8 +282,7 @@
 			handleSubmit () {
 				let that=this,
 					data=Object.assign(this.form.data,{
-						'tag':this.form.tag,
-						'thumbnail':this.upload.result.path
+						'tag':this.form.tag
 					});
 				this.formValidate('formVal',function(){
 					that.$store.dispatch('createArticleList',data).then((result) => {
@@ -281,9 +292,9 @@
 				})
 			},
 			handleCreateTag(){
-                this.form.tag.push({
-                    value: ''
-                });
+				this.form.tag.push({
+						value: ''
+				});
 			},
 			handleRemoveTag(index){
 				this.form.tag.splice(index,1)

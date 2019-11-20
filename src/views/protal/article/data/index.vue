@@ -4,6 +4,9 @@
 			<Split v-model="split" mode="vertical">
 				<div slot="top" class="split-pane">
 					<Form ref="formInline" :model="search.form.data" :rules="search.form.rule" :label-width="80" inline>
+						<FormItem label="所属乡村">
+							<Cascader :data="search.region" v-model="search.form.data.village_id" clearable filterable placeholder="请输入或选择村落名称"></Cascader>
+						</FormItem>
 						<FormItem :label="$t('article_type')">
 							<stree
 								v-model="treeSelect.Selected"
@@ -23,7 +26,7 @@
 				</div>
 				<div slot="bottom" class="split-pane">
 					<data-grid ref="datagrid" v-show="action=='datagrid'" :finisData="finishUpdateData" :finisDataIndex="todoUpdateDataIndex" @create="handleCreate" @update="handleUpdate"></data-grid>
-					<create-page ref="createpage" v-show="action=='create'" :treeSelectData="treeSelect.data" @back=" action='datagrid' " @submit="createArticleData"></create-page>
+					<create-page ref="createpage" v-if="action=='create'" :treeSelectData="treeSelect.data" @back=" action='datagrid' " @submit="createArticleData"></create-page>
 					<update-page ref="updatepage" v-show="action=='update'" :treeSelectData="treeSelect.data" :updateData="todoUpdateData" @back=" action='datagrid' " @submit="updateArticleData"></update-page>
 				</div>
 			</Split>
@@ -50,26 +53,39 @@
 				search:{
 					form:{
 						data:{
-							title:''
+							title:'',
+							village_id:[]
 						},
 						rule:{
 							title:[]
 						}
-					}
+					},
+					region:[]
 				},
 				treeSelect:{
 					selected:[],
 					data:[]
 				},
 				todoUpdateData:{},
-				todoUpdateDataIndex:'',
+				todoUpdateDataIndex:0,
 				finishUpdateData:{}
 			}
 		},
 		mounted(){
+			let that=this;
 			this.$store.dispatch('readArticleType').then((data) => {
 				this.articleTypeTree(data)
 			});
+			this.$store.dispatch('readVillageData').then(result=>{
+				result.map((item,index)=>{
+					if(item.region_text){
+						that.search.region.push({
+							label:item.region_text,
+							value:item.uniqid
+						})
+					}
+				})
+			})
 		},
 		methods: {
 			articleTypeTree(data) {
@@ -93,7 +109,8 @@
 			searchArticleList(){
 				this.$refs.datagrid.searchArticle({
 					type:this.treeSelect.Selected,
-					title:this.search.form.data.title
+					title:this.search.form.data.title,
+					village_id:this.search.form.data.village_id[0]
 				});
 			},
 			handleCreate(){

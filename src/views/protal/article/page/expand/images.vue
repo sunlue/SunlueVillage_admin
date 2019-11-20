@@ -5,7 +5,7 @@
 			<div class="scroll" v-if="data.length>0">
 				<template v-for="(item, index) in data">
 					<div class="item" :key="index">
-						<img :src="item.link" :alt="item.name" />
+						<img :src="$assets.url+item.link" :alt="$assets.url" />
 						<div class="delete">
 							<Button type="error" @click="handleRemove(item,index)">{{$t('btn_delete')}}</Button>
 						</div>
@@ -20,10 +20,8 @@
 <script>
 	export default {
 		data() {
-			let that = this;
 			return {
 				show:false,
-				assets: that.config.assets,
 				waterfall: {
 					gap: 0,
 					align: 'center',
@@ -36,8 +34,6 @@
 				type: Array,
 				default: () => {}
 			}
-		},
-		mounted() {
 		},
 		methods: {
 			handleRemove(file, index) {

@@ -5,24 +5,23 @@
 				<div slot="top" class="split-pane">
 					<Form ref="formInline" :model="search.form.data" :rules="search.form.rule" :label-width="80" inline>
 						<FormItem :label="$t('village_name')" prop="name">
-							<Input type="text" v-model="search.form.data.name" :placeholder="$t('please')+$t('enter')+$t('village_name')">
-							</Input>
+							<Input type="text" v-model="search.form.data.name" clearable 
+							:placeholder="$t('please')+$t('enter')+$t('village_name')"></Input>
 						</FormItem>
 						<FormItem :label="$t('village_type')" prop="type">
-							<Select v-model="search.form.data.type">
+							<Select v-model="search.form.data.type" clearable filterable>
 								<Option value="1">行政村</Option>
 								<Option value="2">自然村</Option>
 							</select>
 						</FormItem>
 						<FormItem :label-width="0">
-							<Button type="info">{{ $t('btn_search') }}</Button>
+							<Button type="info" @click="searchVillage">{{ $t('btn_search') }}</Button>
 						</FormItem>
 					</Form>
 				</div>
 				<div slot="bottom" class="split-pane">
-					<data-grid ref="datagrid" v-show="action=='datagrid'" :finisData="finishUpdateData" :finisDataIndex="todoUpdateDataIndex" @create="handleCreate" @update="handleUpdate"></data-grid>
-					<create-page ref="createpage" v-show="action=='create'" @back=" action='datagrid' " @submit="createArticleData"></create-page>
-					<!-- <update-page ref="updatepage" v-show="action=='update'" :treeSelectData="treeSelect.data" :updateData="todoUpdateData" @back=" action='datagrid' " @submit="updateArticleData"></update-page> -->
+					<data-grid ref="datagrid" v-show="action=='datagrid'" @create="action='create'"></data-grid>
+					<create-page ref="createpage" v-show="action=='create'" @back=" action='datagrid' " @submit="createVillageData"></create-page>
 				</div>
 			</Split>
 		</div>
@@ -32,12 +31,10 @@
 <script>
 	import dataGrid from './grid'
 	import createPage from './create'
-	import updatePage from './update'
 	export default{
 		components: {
 			dataGrid,
-			createPage,
-			updatePage
+			createPage
 		},
 		data(){
 			return{
@@ -46,42 +43,20 @@
 				search:{
 					form:{
 						data:{
-							city:['510000','510700','510703'],
+							name:'',
 							type:''
-						},
-						rule:{
-							title:[]
 						}
 					}
-				},
-				todoUpdateData:{},
-				todoUpdateDataIndex:'',
-				finishUpdateData:{}
+				}
 			}
 		},
-		mounted(){
-			// this.$store.dispatch('readRegion').then(result=>{
-			// 	console.log(result)
-			// })
-			
-		},
 		methods: {
-			handleCreate(){
-				this.action='create';
-			},
-			handleUpdate(data,index){
-				data['timeStamp']=new Date().getTime()
-				this.todoUpdateData=data;
-				this.todoUpdateDataIndex=index;
-				this.action='update';
-			},
-			createArticleData(data){
-				this.$refs.datagrid.createArticle(data)
+			createVillageData(data){
+				this.$refs.datagrid.createVillage(data)
 				this.action='datagrid';
 			},
-			updateArticleData(data){
-				this.finishUpdateData=data;
-				this.action='datagrid';
+			searchVillage(){
+				this.$refs.datagrid.searchVillage(this.search.form.data)
 			}
 		}
 	}

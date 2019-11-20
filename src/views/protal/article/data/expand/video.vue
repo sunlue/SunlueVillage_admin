@@ -1,32 +1,34 @@
 <template>
 	<div>
-		<Upload  v-if="!linkpath" :action="upload.url" :show-upload-list="false"
+		<Upload  v-if="!linkpath" :action="$upload.video" :show-upload-list="false"
 			:format="['mp4','avi','wmv']" name="file" :on-success="uploadVideoSuccess"
 			:on-error="uploadVideoError" :on-progress="uploadVideoProgress"
 			:on-format-error="uploadVideoFormatError">
 			<Button type="info" size="small">{{$t('upload')}}</Button>
 		</Upload>
-		<Button type="info" size="small" @click="modal.show=true" v-if="linkpath">{{$t('review')}}</Button>
-		<Modal v-model="modal.show" :footer-hide="true" class="review" v-if="linkpath">
-			<p slot="header">{{$t('review')}}</p>
-			<Row style="margin: 0 5px 10px 5px;">
-				<Col span="12">
-					<Upload :action="upload.url" :show-upload-list="false"
-					:format="['mp4','avi','wmv']" name="file" :on-success="uploadVideoSuccess"
-					:on-error="uploadVideoError" :on-progress="uploadVideoProgress"
-					:on-format-error="uploadVideoFormatError">
-						<Button type="primary" long>{{$t('update')}}</Button>
-					</Upload>
-				</Col>
-				<Col span="12">
-					<Button type="error" long @click="deleteVideo">{{$t('delete')}}</Button>
-				</Col>
-			</Row>
-			<video autoplay="autoplay" :poster="data.thumbnail" :src="upload.path" style="width: 100%;" controls="controls"></video>
-		</Modal>
-		<Modal v-model="slider.show" :closable="false" :footer-hide="true" :mask-closable="false">
-			<Slider v-model="slider.value" :show-tip="slider.tip"></Slider>
-		</Modal>
+		<template v-else>
+			<Button type="info" size="small" @click="modal.show=true">{{$t('review')}}</Button>
+			<Modal v-model="modal.show" :footer-hide="true" class="review">
+				<p slot="header">{{$t('review')}}</p>
+				<Row style="margin: 0 5px 10px 5px;">
+					<Col span="12">
+						<Upload :action="$upload.video" :show-upload-list="false"
+						:format="['mp4','avi','wmv']" name="file" :on-success="uploadVideoSuccess"
+						:on-error="uploadVideoError" :on-progress="uploadVideoProgress"
+						:on-format-error="uploadVideoFormatError">
+							<Button type="primary" long>{{$t('update')}}</Button>
+						</Upload>
+					</Col>
+					<Col span="12">
+						<Button type="error" long @click="deleteVideo">{{$t('delete')}}</Button>
+					</Col>
+				</Row>
+				<video autoplay="autoplay" :poster="data.thumbnail" :src="$assets.url+video" style="width: 100%;" controls="controls"></video>
+			</Modal>
+			<Modal v-model="slider.show" :closable="false" :footer-hide="true" :mask-closable="false">
+				<Slider v-model="slider.value" :show-tip="slider.tip"></Slider>
+			</Modal>
+		</template>
 	</div>
 </template>
 
@@ -36,13 +38,7 @@
 		components: {
 		},
 		data() {
-			let uploadVideo=this.config.assets.upload.video;
 			return {
-				linkpath:'',
-				upload:{
-					url:uploadVideo,
-					path:''
-				},
 				modal:{
 					show:false
 				},
@@ -63,15 +59,6 @@
 				default: ''
 			},
 		},
-		mounted(){
-			this.$nextTick(function(){
-				if (this.video!='') {
-					let uploadUrl=this.config.assets.upload.url;
-					this.linkpath=this.video;
-					this.upload.path=uploadUrl+this.video;
-				}
-			})
-		},
 		methods: {
 			uploadVideoProgress(event){
 				this.slider.value=parseInt((event.loaded/event.total)*100);
@@ -84,9 +71,13 @@
 				}
 			},
 			uploadVideoSuccess(response){
-				this.$emit('uploadSuccess',response.data);
-				this.linkpath=response.data.link;
-				this.upload.path=response.data.url+response.data.link;
+				if (response.code != 200) {
+					this.$Message.error(response.info);
+				}else{
+					this.$emit('uploadSuccess',response.data);
+					this.video=response.data.link;
+					this.$Message.success('success');
+				}
 			},
 			uploadVideoError(error, file){
 				console.error(error)
@@ -96,8 +87,7 @@
 			},
 			deleteVideo(){
 				let that=this,
-					uniqid=that.data.uniqid,
-					uploadUrl=that.config.assets.upload.url;
+					uniqid=that.data.uniqid;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
@@ -107,7 +97,7 @@
 							field:'video',
 							value:''
 						}).then((result) => {
-							axios.delete(uploadUrl+'/delete',{
+							axios.delete(that.$assets.delete,{
 								data:{path:that.linkpath}
 							}).then(()=>{
 								that.linkpath='';

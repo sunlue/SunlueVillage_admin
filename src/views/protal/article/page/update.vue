@@ -159,7 +159,7 @@
 		},
 		data() {
 			let that = this,
-				uploadUrl = this.config.assets.upload.url;
+				uploadImage = this.$assets.upload.image;
 			return {
 				form: {
 					data: {
@@ -204,7 +204,7 @@
 				},
 				tabs: 'tab_basis',
 				upload: {
-					url: uploadUrl + '/uploads/image',
+					url: uploadImage,
 					header: {},
 					result: {
 						path: '',
@@ -223,7 +223,7 @@
 		watch: {
 			updateData(newValue) {
 				let tag = [],
-					uploadUrl = this.config.assets.upload.url;
+					assetsUrl = this.$assets.url;
 				newValue.show = newValue.show + '';
 				newValue.comment = newValue.comment + '';
 				newValue.is_top = newValue.is_top + '';
@@ -232,7 +232,7 @@
 				newValue.quality = newValue.quality + '';
 				this.form.data = newValue;
 				this.upload.result.path = newValue.thumbnail;
-				this.upload.result.url = uploadUrl + newValue.thumbnail;
+				this.upload.result.url = assetsUrl + newValue.thumbnail;
 				this.$refs.content.setContent(newValue.content)
 
 				for (let i in newValue['tag']) {

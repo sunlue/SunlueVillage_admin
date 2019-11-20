@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Upload v-if="!linkpath" :action="upload.audio.url" :show-upload-list="false"
+		<Upload v-if="!audio" :action="$upload.audio" :show-upload-list="false"
 			accept="audio/mpeg"
 			:format="['mp3','mp4']" name="file" :on-success="uploadAudioSuccess"
 			:on-error="uploadAudioError" :on-progress="uploadAudioProgress"
@@ -13,7 +13,7 @@
 				<p slot="header">{{$t('review')}}</p>
 				<Row style="margin: 0 5px 10px 5px;">
 					<Col span="12">
-						<Upload :action="upload.audio.url" :show-upload-list="false"
+						<Upload :action="$upload.audio" :show-upload-list="false"
 						:format="['mp3','mp4']" name="file" :on-success="uploadAudioSuccess"
 						:on-error="uploadAudioError" :on-progress="uploadAudioProgress"
 						:on-format-error="uploadAudioFormatError">
@@ -41,18 +41,11 @@
 			Aplayer
 		},
 		data() {
-			let uploadAudio=this.config.assets.upload.audio;
 			return {
 				music:{
 					title:'',
 					url:'',
 					artist:''
-				},
-				linkpath:'',
-				upload:{
-					audio:{
-						url:uploadAudio,
-					}
 				},
 				modal:{
 					show:false
@@ -77,11 +70,10 @@
 		mounted(){
 			this.$nextTick(function(){
 				if (this.audio!='') {
-					let uploadUrl=this.config.assets.upload.url;
-					this.music.url=uploadUrl+this.audio;
+					let assetsUrl=this.$assets.url;
+					this.music.url=assetsUrl+this.audio;
 					this.music.title=this.data.title;
 					this.music.pic=this.data.thumbnail;
-					this.linkpath=this.audio;
 				}
 			})
 		},
@@ -97,10 +89,15 @@
 				}
 			},
 			uploadAudioSuccess(response){
-				this.$emit('uploadSuccess',response.data);
-				let uploadUrl=this.config.assets.upload.url;
-				this.music.url=uploadUrl+response.data.link;
-				this.linkpath=response.data.link;
+				if(response.code==200){
+					this.$emit('uploadSuccess',response.data);
+					let assetsUrl=this.$assets.url;
+					this.music.url=assetsUrl+response.data.link;
+					this.audio=response.data.link;
+					this.$Message.success('success');
+				}else{
+					this.$Message.error(response.info);
+				}
 			},
 			uploadAudioError(error){
 				console.error(error)
@@ -110,8 +107,7 @@
 			},
 			deleteAudio(){
 				let that=this,
-					uniqid=this.data.uniqid,
-					uploadUrl=this.config.assets.upload.url;
+					uniqid=this.data.uniqid;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
@@ -121,10 +117,10 @@
 							field:'audio',
 							value:''
 						}).then(() => {
-							axios.delete(uploadUrl+'delete',{
-								data:{path:that.linkpath}
+							axios.delete(that.$assets.delete,{
+								data:{path:that.audio}
 							}).then(()=>{
-								that.linkpath='';
+								that.audio='';
 								that.modal.show=false;
 							})
 						});

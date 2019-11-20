@@ -52,7 +52,7 @@
 			linkPage
 		},
 		data() {
-			let uploadUrl = this.config.assets.upload.url;
+			let uploadUrl = this.$assets.url;
 			return {
 				model: false,
 				items: [],

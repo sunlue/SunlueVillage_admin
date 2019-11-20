@@ -1,7 +1,7 @@
 <template>
 	<Row>
 		<Col span="12">
-		<Form ref="formItem" :model="formItem" :rules="formRule" :label-width="80">
+		<Form ref="formItem" :model="formItem" :rules="formRule" :label-width="120">
 			<FormItem :label="$t('seo_title')" prop="seo_title">
 				<Input v-model="formItem.seo_title" :placeholder="$t('please')+$t('enter')+$t('seo_title')"></Input>
 			</FormItem>

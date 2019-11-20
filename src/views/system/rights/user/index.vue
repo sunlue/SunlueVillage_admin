@@ -27,25 +27,25 @@
 				selected_role: {},
 				columns: [{
 					type: 'index',
-					width: 40
+					width: 50
 				}, {
 					title: that.$t('user_account'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'account'
 				}, {
 					title: that.$t('user_name'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'name'
 				}, {
 					title: that.$t('user_nickname'),
-					minWidth: 90,
+					minWidth: 120,
 					align: 'center',
 					key: 'nickname'
 				}, {
 					title: that.$t('user_mobile'),
-					minWidth: 90,
+					minWidth: 120,
 					align: 'center',
 					key: 'mobile'
 				}, {
@@ -55,27 +55,27 @@
 					key: 'email'
 				}, {
 					title: that.$t('user_weixin'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'weixin'
 				}, {
 					title: that.$t('user_qq'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'qq'
 				}, {
 					title: that.$t('user_account_login'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'is_login'
 				}, {
 					title: that.$t('user_mobile_login'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'is_mobile'
 				}, {
 					title: that.$t('user_login_count'),
-					minWidth: 90,
+					minWidth: 92,
 					align: 'center',
 					key: 'login_count'
 				}, {
