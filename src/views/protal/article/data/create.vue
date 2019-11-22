@@ -171,17 +171,6 @@
 		components: {
 			Tinymce
 		},
-		props: {
-			treeSelectData: {
-				type: Array,
-				default: ()=>{}
-			}
-		},
-		watch: {
-			treeSelectData(newValue) {
-				this.form.treeSelect.data=newValue;
-			}
-		},
 		data() {
 			let that=this
 			return {
@@ -252,8 +241,29 @@
 					}
 				})
 			})
+			this.$store.dispatch('readArticleType').then((data) => {
+				this.articleTypeTree(data);
+			});
 		},
 		methods: {
+			articleTypeTree(data) {
+				let map = new Object(),
+					treeArr = new Array();
+				data.forEach(function(item) {
+					map[item.uniqid] = item;
+				});
+				data.forEach(function(item) {
+					var parent = map[item.pid];
+					item['id'] = item['uniqid'];
+					item['title'] = item['name'];
+					if (parent) {
+						(parent.children || (parent.children = [])).push(item);
+					} else {
+						treeArr.push(item);
+					}
+				});
+				this.form.treeSelect.data=treeArr;
+			},
 			uploadSuccess(response){
 				if(response.code==200){
 					this.form.data.thumbnail=response.data.link;

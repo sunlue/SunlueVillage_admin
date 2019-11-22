@@ -277,7 +277,8 @@ export default {
 	village: '村落',
 	village_list: '村落列表',
 	village_name: '村落名称',
-	village_type: '村落属性',
+	village_attr: '村落属性',
+	village_type: '村落类型',
 	village_content: '村落介绍',
 	village_audio: '村落音频',
 	village_video: '村落视频',
@@ -312,4 +313,9 @@ export default {
 	city:'市',
 	county:'区县',
 	towns:'乡镇',
+	//页面views/village/type/index
+	village_type_name: '村落类型名称',
+	village_type_sign: '村落类型标记',
+	village_type_remark: '村落类型备注',
+	village_type_name_empty: '村落类型名称不能为空',
 }

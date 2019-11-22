@@ -214,6 +214,15 @@ const router = {
 				language: 'village_data',
 				title: '村落数据',
 			},
+		},{
+			path: 'type',
+			name: 'village_type',
+			component: () => import('@/views/village/type/index.vue'),
+			meta: {
+				is_login: true,
+				language: 'village_type',
+				title: '村落类型',
+			},
 		}]
 	}]
 }

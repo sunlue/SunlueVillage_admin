@@ -2,16 +2,21 @@
 	<div class="datagrid">
 		<ButtonGroup :size="buttonSize">
 			<Button :size="buttonSize" type="primary" @click="$emit('create')">{{$t('create')}}</Button>
-			<Button :size="buttonSize" type="primary" @click="renderVillage()">{{$t('btn_refresh')}}</Button>
+			<Button :size="buttonSize" type="primary" @click="renderVillage">{{$t('btn_refresh')}}</Button>
 		</ButtonGroup>
 		<Divider size="small" />
 		<div class="datatable">
 			<div class="scroll-y">
 				<Table ref="datatable" size="small" :columns="datagrid.table.columns" :data="datagrid.table.data" :border="true"
 				 :draggable="true" :loading="datagrid.table.loading">
-					<template slot-scope="{ row,index }" slot="type">
-						<template v-if="row.type==1">行政村</template>
+					<template slot-scope="{ row,index }" slot="attr">
+						<template v-if="row.attribute==1">行政村</template>
 						<template v-else>自然村</template>
+					</template>
+					<template slot-scope="{ row,index }" slot="type">
+						<Tooltip :content="row.type.join(',')">
+							{{row.type.join(',')}}
+						</Tooltip>
 					</template>
 					<template slot-scope="{ row,index }" slot="show">
 						<i-switch size="large" :value="row.show+''" true-value="1" false-value="0" @on-change="handleSwitch(row,index,'show',$event)">
@@ -117,10 +122,15 @@
 							},
 							{
 								title: that.$t('village_type'),
-								width: 104,
+								width: 90,
 								slot: 'type',
-								align:'center',
-								sortable:'true'
+								align:'center'
+							},
+							{
+								title: that.$t('village_attr'),
+								width: 90,
+								slot: 'attr',
+								align:'center'
 							},
 							{
 								title: that.$t('village_industry'),
@@ -144,7 +154,7 @@
 									},{
 										title: that.$t('woman'),
 										width: 72,
-										key: 'registered_population_man',
+										key: 'registered_population_woman',
 										align:'center',
 										sortable:'true'
 									}]
@@ -170,12 +180,14 @@
 								title: that.$t('collective_income')+'(元)',
 								minWidth: 86,
 								key: 'collective_income',
-								align:'center'
+								align:'center',
+								sortable:'true'
 							},{
 								title: that.$t('person_income')+'(元)',
 								minWidth: 86,
 								key: 'person_income',
-								align:'center'
+								align:'center',
+								sortable:'true'
 							},
 							{
 								title: that.$t('village_content'),
@@ -314,31 +326,22 @@
 		},
 		mounted() {
 			let that = this;
-			this.readVillageData({
-				page: 1,
-				limit: this.datagrid.paging.limit
-			}, function(result) {
-				that.datagrid.paging.total = result.total;
-				that.datagrid.paging.page = result.current_page;
-			})
+			this.renderVillage()
 		},
 		methods: {
 			changePage(pageNumber) {
 				this.datagrid.paging.page = pageNumber
-				this.readVillageData()
+				this.renderVillage()
 			},
 			changePageSize(PageSize) {
 				this.datagrid.paging.page = 1
 				this.datagrid.paging.limit = PageSize;
-				this.readVillageData()
+				this.renderVillage()
 			},
 			searchVillage(where) {
-				this.readVillageData(where)
+				this.renderVillage(where)
 			},
-			renderVillage(){
-				this.readVillageData()
-			},
-			readVillageData(where, callback) {
+			renderVillage(where, callback) {
 				this.datagrid.table.loading = true;
 				this.$store.dispatch('readVillageData', Object.assign({
 					page:this.datagrid.paging.page,
@@ -346,6 +349,7 @@
 				},where)).then((result) => {
 					this.datagrid.table.data = result.data;
 					this.datagrid.table.loading = false;
+					this.datagrid.paging.total = result.total;
 					typeof(callback) == 'function' ? callback(result): '';
 				});
 			},

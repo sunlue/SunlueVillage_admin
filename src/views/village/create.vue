@@ -20,11 +20,20 @@
 									</FormItem>
 								</Col>
 								<Col span="6">
-									<FormItem :label="$t('village_type')" prop="type">
-										<Select v-model="form.data.type">
+									<FormItem :label="$t('village_attr')" prop="attribute">
+										<Select v-model="form.data.attribute">
 											<Option value="1">行政村</Option>
 											<Option value="2">自然村</Option>
 										</select>
+									</FormItem>
+								</Col>
+								<Col span="24">
+									<FormItem :label="$t('village_type')" prop="type">
+										<Select v-model="form.data.type" clearable multiple>
+											<template v-for="(item,index) in type">
+													<Option :value="item.uniqid" :key="index">{{ item.name }}</Option>
+											</template>
+										</Select>
 									</FormItem>
 								</Col>
 								<Col span="24" v-if="nation.length>0">
@@ -218,7 +227,8 @@
 				form:{
 					data:{
 						region:['510000000000','510700000000','510703000000'],
-						type:'1',
+						type:[],
+						attribute:'1',
 						registered_population:0,
 						registered_population_man:0,
 						registered_population_woman:0,
@@ -259,6 +269,7 @@
 				},
 				region:[],
 				nation:[],
+				type:[],
 				tabs:'tab_basis',
 				upload: {
 					url: uploadImage,
@@ -278,6 +289,9 @@
 			})
 			this.$store.dispatch('readNation').then(result=>{
 				this.nation=result
+			})
+			this.$store.dispatch('readVillageType').then(result=>{
+				this.type=result
 			})
 		},
 		methods: {

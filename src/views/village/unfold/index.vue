@@ -18,11 +18,10 @@ export default {
 	},
 	data() {
 		return {
-			route: 'scenic',
+			route: 'data',
 			data: {}
 		};
 	},
-	mounted() {},
 	methods: {
 		mClick(m) {
 			if(m.href){
@@ -31,7 +30,6 @@ export default {
 			this.$refs.left.menu(m.children);
 		},
 		menuItemClick(name) {
-			console.log(name)
 			this.route = name;
 		}
 	}

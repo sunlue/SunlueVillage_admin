@@ -8,7 +8,7 @@ let apiURL = config.api.url(process.env.NODE_ENV);
 // 创建一个axios请求
 const service = axios.create({
 	baseURL: apiURL, // api 的 base_url
-	timeout: 5000, // 超时时间
+	timeout: 10000, // 超时时间
 	params: {}
 })
 

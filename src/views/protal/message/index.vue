@@ -6,13 +6,13 @@
 					<div class="scroll">
 						<template v-for="(msg,group,index) in data">
 							<div :class="['msg',index==activeMsgIndex?'active':'']" :key="index" @click="review(msg,index)">
-								<h3>留言编号:{{group}}</h3>
+								<h3>留言/咨询编号:{{group}}</h3>
 								<p>{{msg.last.content}}</p>
 							</div>
 						</template>
 						<template v-if="data.length<1">
 							<div class="text-center" style="line-height: 100px;">
-								暂无留言
+								暂无留言/咨询
 							</div>
 						</template>
 					</div>
@@ -32,14 +32,15 @@
 						</div>
 					</div>
 					<div class="info">
-						<Card title="留言人信息" icon="ios-options" :padding="0" :bordered="false" :dis-hover="true">
+						<Card title="留言/咨询人信息" icon="ios-options" :padding="0" :bordered="false" :dis-hover="true">
 							<CellGroup>
-								<Cell title="联系人" :label="activeInfo.name" />
-								<Cell title="手机号" :label="activeInfo.mobile_tel" />
-								<Cell title="联系邮箱" :label="activeInfo.email" />
-								<Cell title="联系地址" :label="activeInfo.address" />
-								<Cell title="留言时间" :label="activeInfo.by_time" />
-								<Cell title="留言IP" :label="activeInfo.by_ip" />
+								<Cell title="咨询类型" :label="activeInfo.type" v-if="activeInfo.type" />
+								<Cell title="联系人" :label="activeInfo.name" v-if="activeInfo.name" />
+								<Cell title="手机号" :label="activeInfo.mobile_tel" v-if="activeInfo.mobile_tel" />
+								<Cell title="联系邮箱" :label="activeInfo.email" v-if="activeInfo.email" />
+								<Cell title="联系地址" :label="activeInfo.address" v-if="activeInfo.address" />
+								<Cell title="留言时间" :label="activeInfo.by_time" v-if="activeInfo.by_time" />
+								<Cell title="留言IP" :label="activeInfo.by_ip" v-if="activeInfo.by_ip" />
 							</CellGroup>
 						</Card>
 					</div>
