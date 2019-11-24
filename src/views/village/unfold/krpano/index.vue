@@ -1,8 +1,8 @@
 <template>
-	<div class="village-relics-page">
+	<div class="village-krpano-page">
 		<div class="scroll-y">
 			<template v-if="action=='create'">
-				<create-page @back=" action='datagrid' " @create="createRelics"></create-page>
+				<create-page @back=" action='datagrid' " @create="createKrpano"></create-page>
 			</template>
 			<template v-else-if="action=='update'">
 				<update-page @back=" action='datagrid' " :updata="updata"></update-page>
@@ -26,8 +26,7 @@
 									<strong class="title">{{item.name}}</strong>
 								</div>
 								<div class="titles" v-else>{{item.name}}</div>
-								<div class="intro" v-if="item.excerpt">{{item.excerpt}}</div>
-								<div class="intro" v-else-if="item.content" v-html="item.content"></div>
+								<div class="intro" v-if="item.content" v-html="item.content"></div>
 								<div class="intro" v-else>暂无简介</div>
 								<Divider />
 								<div class="footer">
@@ -49,12 +48,12 @@
 										<Col span="12" class="text-right">
 											<ButtonGroup size="small">
 												<Tooltip :content="$t('btn_update')" placement="top">
-													<Button size="small" type="primary" @click="updateRelics(item,index)">
+													<Button size="small" type="primary" @click="updateKrpano(item,index)">
 														<Icon type="md-create" />
 													</Button>
 												</Tooltip>
 												<Tooltip :content="$t('btn_delete')" placement="top">
-													<Button size="small" type="error" @click="deleteRelics(item,index)">
+													<Button size="small" type="error" @click="deleteKrpano(item,index)">
 														<Icon type="ios-trash-outline" />
 													</Button>
 												</Tooltip>
@@ -109,7 +108,7 @@
 		mounted() {
 			let that=this,
 				village_id=this.$route.query.unique;
-			that.$store.dispatch('readVillageRelics',{
+			that.$store.dispatch('readVillageKrpano',{
 				village_id:village_id
 			}).then((result) => {
 				this.datagrid=result.data;
@@ -123,25 +122,25 @@
 			changePageSize(pageSize){
 				this.paging.limit=pageSize
 			},
-			createRelics(data){
+			createKrpano(data){
 				this.datagrid.push(data);
 				this.paging.total+=1;
 			},
-			updateRelics(item,index){
+			updateKrpano(item,index){
 				this.updata=item
 				this.action='update'
 			},
-			deleteRelics(item,index){
+			deleteKrpano(item,index){
 				let that = this;
 				that.$Modal.confirm({
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
 					onOk: function() {
-						that.$store.dispatch('deleteVillageRelics', {
+						that.$store.dispatch('deleteVillageKrpano', {
 							uniqid: item.uniqid,
 						}).then((result) => {
 							that.datagrid.splice(index, 1);
-							that.paging.total+=1;
+							that.paging.total-=1;
 						});
 					}
 				});
@@ -151,7 +150,7 @@
 </script>
 
 <style lang="less">
-	.village-relics-page{
+	.village-krpano-page{
 		position: relative;
 		width: 100%;
 		height:100%;

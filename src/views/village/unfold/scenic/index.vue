@@ -125,6 +125,7 @@
 			},
 			createScenic(data){
 				this.datagrid.push(data);
+				this.paging.total+=1;
 			},
 			updateScenic(item,index){
 				this.updata=item
@@ -140,6 +141,7 @@
 							uniqid: item.uniqid,
 						}).then((result) => {
 							that.datagrid.splice(index, 1);
+							that.paging.total+=1;
 						});
 					}
 				});

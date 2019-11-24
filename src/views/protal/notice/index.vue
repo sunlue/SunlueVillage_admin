@@ -101,7 +101,6 @@
 		data() {
 			let that = this;
 			return {
-				modal: false,
 				action: 'datagrid',
 				data: {},
 				update: '',
@@ -160,14 +159,14 @@
 					if (this.action == 'create') {
 						this.$store.dispatch('createNotice', this.form.value).then((result) => {
 							this.data.push(result)
-							this.modal = false;
+							this.action = 'datagrid';
 						})
 					} else if (this.action == 'update') {
 						let data = Object.assign(this.form.value, {
 							uniqid: this.update
 						})
 						this.$store.dispatch('updateNotice', data).then((result) => {
-							this.modal = false;
+							this.action = 'datagrid';
 							this.data[this.updateIndex]['title'] = result.title;
 							this.data[this.updateIndex]['content'] = result.content;
 							this.data[this.updateIndex]['release'] = result.release;
@@ -200,7 +199,6 @@
 			},
 			handleCreate() {
 				this.action = 'create';
-				this.modal = true;
 			},
 			handleUpdate(item, index) {
 				this.action = 'update';

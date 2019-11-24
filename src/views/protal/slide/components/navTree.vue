@@ -135,21 +135,40 @@
 								}
 							},
 							[
-								h('Button', {
-									props: {
-										icon: 'ios-add',
-										type: 'info',
-										size: 'small'
-									},
-									style: {
-										width: '57px'
-									},
-									on: {
-										click: () => {
-											this.navTreeClick(root,node,data)
-										}
+								h('Tooltip',{
+									props:{
+										content:'添加幻灯片'
 									}
-								})
+								},[
+									h('Button', {
+										props: {
+											icon: 'ios-add',
+											type: 'info',
+											size: 'small'
+										},
+										style: {
+											width: '57px'
+										},
+										on: {
+											click: () => {
+												this.navTreeClick(root,node,data)
+											}
+										}
+									}),
+								]),
+								h('Poptip',{
+									props: {
+										content:'识别号：'+data.uniqid
+									}
+								},[
+									h('Button', {
+										props: {
+											icon: 'ios-eye',
+											type: 'success',
+											size: 'small'
+										}
+									})
+								])
 							]
 						)
 					]

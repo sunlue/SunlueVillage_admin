@@ -26,6 +26,10 @@ const menu = [{
 			}
 		]
 	},
+	{
+		name: '720全景',
+		href: 'krpano'
+	}
 	// {
 	// 	name: '历史演变',
 	// 	children: [{

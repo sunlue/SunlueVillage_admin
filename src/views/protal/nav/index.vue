@@ -247,65 +247,96 @@
 								}
 							},
 							[
-								h('Button', {
+								h('Tooltip',{
 									props: {
-										icon: 'ios-add',
-										type: 'primary',
-										size: 'small'
-									},
-									style: {},
-									on: {
-										click: () => {
-											this.createNavData = data;
-											this.rootData = data;
-											this.form.action = 'create';
-											this.modal = true;
-										}
+										content:'添加',
 									}
-								}),
-								h('Button', {
-									props: {
-										icon: 'md-create',
-										type: 'info',
-										size: 'small'
-									},
-									style: {},
-									on: {
-										click: () => {
-											this.updateNavData = data;
-											this.updateNavNode = node;
-											this.rootData = root[node['parent']].node;
-											this.form.action = 'update';
-											this.form.data = {
-												name: data.title,
-												sign: data.sign,
-												remark: data.remark,
-												type: data.type+'',
-												url: data.url,
-												target: data.target,
-												show: data.show+'',
-											};
-											if(data.type==2){
-												var articleType=this.form.treeSelect.dataArr[data.url]
-												this.form.treeSelect.selected.uniqid=articleType.uniqid
-												this.form.treeSelect.selected.name=articleType.name
+								},[
+									h('Button', {
+										props: {
+											icon: 'ios-add',
+											type: 'primary',
+											size: 'small'
+										},
+										style: {},
+										on: {
+											click: () => {
+												this.createNavData = data;
+												this.rootData = data;
+												this.form.action = 'create';
+												this.modal = true;
 											}
-											this.modal = true;
 										}
-									}
-								}),
-								h('Button', {
+									}),
+								]),
+								h('Tooltip',{
 									props: {
-										icon: 'ios-remove',
-										type: 'error',
-										size: 'small'
-									},
-									on: {
-										click: () => {
-											this.deleteNav(root, node, data);
-										}
+										content:'修改',
 									}
-								})
+								},[
+									h('Button', {
+										props: {
+											icon: 'md-create',
+											type: 'info',
+											size: 'small'
+										},
+										style: {},
+										on: {
+											click: () => {
+												this.updateNavData = data;
+												this.updateNavNode = node;
+												this.rootData = root[node['parent']].node;
+												this.form.action = 'update';
+												this.form.data = {
+													name: data.title,
+													sign: data.sign,
+													remark: data.remark,
+													type: data.type+'',
+													url: data.url,
+													target: data.target,
+													show: data.show+'',
+												};
+												if(data.type==2){
+													var articleType=this.form.treeSelect.dataArr[data.url]
+													this.form.treeSelect.selected.uniqid=articleType.uniqid
+													this.form.treeSelect.selected.name=articleType.name
+												}
+												this.modal = true;
+											}
+										}
+									})
+								]),
+								h('Tooltip',{
+									props: {
+										content:'删除',
+									}
+								},[
+									h('Button', {
+										props: {
+											icon: 'ios-remove',
+											type: 'error',
+											size: 'small'
+										},
+										on: {
+											click: () => {
+												this.deleteNav(root, node, data);
+											}
+										}
+									})
+								]),
+								h('Poptip',{
+									props: {
+										content:'识别号：'+data.uniqid
+									}
+								},[
+									h('Button', {
+										props: {
+											icon: 'ios-eye',
+											type: 'success',
+											size: 'small'
+										}
+									})
+								])
 							]
 						)
 					]

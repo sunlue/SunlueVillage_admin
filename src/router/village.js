@@ -14,7 +14,8 @@ const router = {
 			geo: () => import('@/views/village/unfold/geo/index.vue'),
 			relics: () => import('@/views/village/unfold/relics/index.vue'),
 			natural: () => import('@/views/village/unfold/natural/index.vue'),
-			scenic: () => import('@/views/village/unfold/scenic/index.vue')
+			scenic: () => import('@/views/village/unfold/scenic/index.vue'),
+			krpano: () => import('@/views/village/unfold/krpano/index.vue')
 		},
 		meta: {
 			is_login: true,

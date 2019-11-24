@@ -180,54 +180,85 @@ export default {
 							}
 						},
 						[
-							h('Button', {
+							h('Tooltip',{
 								props: {
-									icon: 'ios-add',
-									type: 'primary',
-									size: 'small'
-								},
-								style: {},
-								on: {
-									click: () => {
-										this.createVillageTypeData = data;
-										this.form.action='create';
-										this.modal = true;
-									}
+									content:'添加'
 								}
-							}),
-							h('Button', {
+							},[
+								h('Button', {
+									props: {
+										icon: 'ios-add',
+										type: 'primary',
+										size: 'small'
+									},
+									style: {},
+									on: {
+										click: () => {
+											this.createVillageTypeData = data;
+											this.form.action='create';
+											this.modal = true;
+										}
+									}
+								})
+							]),
+							h('Tooltip',{
 								props: {
-									icon: 'md-create',
-									type: 'info',
-									size: 'small'
-								},
-								style: {},
-								on: {
-									click: () => {
-										this.updateVillageTypeData = data;
-										this.updateVillageTypeNode = node;
-										this.form.action='update';
-										this.form.data = {
-											name: data.title,
-											sign: data.sign,
-											remark: data.remark
-										};
-										this.modal = true;
-									}
+									content:'修改'
 								}
-							}),
-							h('Button', {
+							},[
+								h('Button', {
+									props: {
+										icon: 'md-create',
+										type: 'info',
+										size: 'small'
+									},
+									style: {},
+									on: {
+										click: () => {
+											this.updateVillageTypeData = data;
+											this.updateVillageTypeNode = node;
+											this.form.action='update';
+											this.form.data = {
+												name: data.title,
+												sign: data.sign,
+												remark: data.remark
+											};
+											this.modal = true;
+										}
+									}
+								})
+							]),
+							h('Tooltip',{
 								props: {
-									icon: 'ios-remove',
-									type: 'error',
-									size: 'small'
-								},
-								on: {
-									click: () => {
-										this.deleteVillageType(root, node, data);
-									}
+									content:'删除'
 								}
-							})
+							},[
+								h('Button', {
+									props: {
+										icon: 'ios-remove',
+										type: 'error',
+										size: 'small'
+									},
+									on: {
+										click: () => {
+											this.deleteVillageType(root, node, data);
+										}
+									}
+								}),
+							]),
+							h('Poptip',{
+								props: {
+									content:'识别号：'+data.uniqid
+								}
+							},[
+								h('Button', {
+									props: {
+										icon: 'ios-eye',
+										type: 'success',
+										size: 'small'
+									}
+								})
+							])
 						]
 					)
 				]

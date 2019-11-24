@@ -143,7 +143,7 @@
 					},
 					rule:{
 						name:[
-							{required: true,trigger: 'blur',message: that.$t('please')+that.$t('enter')+'文物名称'},
+							{required: true,trigger: 'blur',message: that.$t('please')+that.$t('enter')+'景区名称'},
 						]
 					}
 				},
