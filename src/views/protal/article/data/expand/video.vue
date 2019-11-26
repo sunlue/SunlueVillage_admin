@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Upload  v-if="!linkpath" :action="$upload.video" :show-upload-list="false"
+		<Upload  v-if="!video" :action="$upload.video" :show-upload-list="false"
 			:format="['mp4','avi','wmv']" name="file" :on-success="uploadVideoSuccess"
 			:on-error="uploadVideoError" :on-progress="uploadVideoProgress"
 			:on-format-error="uploadVideoFormatError">

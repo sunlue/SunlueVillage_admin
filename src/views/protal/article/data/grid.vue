@@ -2,7 +2,7 @@
 	<div class="datagrid">
 		<ButtonGroup :size="buttonSize">
 			<Button :size="buttonSize" type="primary" @click="$emit('create')">{{$t('create')}}</Button>
-			<Button :size="buttonSize" type="primary" @click="renderArticle({page:1})">{{$t('btn_refresh')}}</Button>
+			<Button :size="buttonSize" type="primary" @click="renderArticle">{{$t('btn_refresh')}}</Button>
 		</ButtonGroup>
 		<Divider size="small" />
 		<div class="datatable">
@@ -71,13 +71,13 @@
 			</div>
 			<Row style="margin-top:10px;">
 				<Col span="12">
-				<Page :total="datagrid.paging.total" :current="datagrid.paging.current" :page-size="datagrid.paging.pageSize"
+				<Page :total="datagrid.paging.total" :current="datagrid.paging.page" :page-size="datagrid.paging.limit"
 				 :show-sizer="true" size="small" @on-change="changePage" @on-page-size-change="changePageSize"></Page>
 				</Col>
 				<Col span="12" class="text-right">
 				共计{{datagrid.paging.total}}条数据，
-				共计{{Math.ceil(datagrid.paging.total/datagrid.paging.pageSize)}}页，
-				当前第{{datagrid.paging.current}}页
+				共计{{Math.ceil(datagrid.paging.total/datagrid.paging.limit)}}页，
+				当前第{{datagrid.paging.page}}页
 				</Col>
 			</Row>
 		</div>
@@ -277,8 +277,8 @@
 					},
 					paging: {
 						total: 0,
-						current: 1,
-						pageSize: 10
+						page: 1,
+						limit: 10
 					}
 				},
 				reviewContent: {
@@ -315,41 +315,38 @@
 			}
 		},
 		mounted() {
-			let that = this;
-			this.renderArticle({
-				page: 1
-			}, function(result) {
-				that.datagrid.paging.total = result.total;
-				that.datagrid.paging.current = result.current_page;
-			})
+			this.renderArticle();
 		},
 		methods: {
 			changePage(pageNumber) {
-				this.renderArticle({
-					page: pageNumber
-				})
+				this.datagrid.paging.page=pageNumber;
+				this.renderArticle()
 			},
 			changePageSize(PageSize) {
-				this.datagrid.paging.pageSize = PageSize;
-				this.renderArticle({
-					page: 1,
-					limit: this.datagrid.paging.pageSize,
-				})
+				this.datagrid.paging.page=pageNumber;
+				this.datagrid.paging.limit = PageSize;
+				this.renderArticle()
 			},
 			searchArticle(where) {
-				where['page'] = 1;
+				this.datagrid.paging.page = 1;
 				this.renderArticle(where)
 			},
 			renderArticle(where, callback) {
 				this.datagrid.table.loading = true;
-				this.$store.dispatch('readArticleList', where).then((result) => {
+				this.$store.dispatch('readArticleList', Object.assign(where?where:{},{
+					page:this.datagrid.paging.page,
+					limit:this.datagrid.paging.limit
+				})).then((result) => {
 					this.datagrid.table.data = result.data;
 					this.datagrid.table.loading = false;
+					this.datagrid.paging.total = result.total;
+					this.datagrid.paging.current = result.current_page;
 					typeof(callback) == 'function' ? callback(result): '';
 				});
 			},
 			createArticle(data) {
 				this.datagrid.table.data.push(data);
+				this.datagrid.paging.total+=1
 			},
 			updateArticle(row, index) {
 				this.$emit('update', row, index)
@@ -364,6 +361,7 @@
 							uniqid: row.uniqid,
 						}).then((result) => {
 							that.datagrid.table.data.splice(index, 1);
+							that.datagrid.paging.total-=1
 						});
 					}
 				});

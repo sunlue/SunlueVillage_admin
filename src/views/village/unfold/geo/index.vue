@@ -8,12 +8,12 @@
 							<Row>
 								<Col span="12">
 									<FormItem label="经度">
-										<InputNumber v-model="formItem.lng" :step="1.00"></InputNumber>
+										<InputNumber v-model="formItem.lng" :step="1.000000"></InputNumber>
 									</FormItem>
 								</Col>
 								<Col span="12">
 									<FormItem label="纬度">
-										<InputNumber v-model="formItem.lat" :step="1.00"></InputNumber>
+										<InputNumber v-model="formItem.lat" :step="1.000000"></InputNumber>
 									</FormItem>
 								</Col>
 								<Col span="8">

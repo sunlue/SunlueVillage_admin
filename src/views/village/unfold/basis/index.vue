@@ -116,6 +116,11 @@
 											</FormItem>
 										</Col>
 										<Col span="24">
+											<FormItem label="村落全景" prop="tour">
+												<Input type="text" v-model="form.data.tour"></Input>
+											</FormItem>
+										</Col>
+										<Col span="24">
 											<FormItem :label="$t('village_industry')" prop="industry">
 												<Input type="textarea" v-model="form.data.industry"></Input>
 											</FormItem>
@@ -251,6 +256,7 @@
 						domain_area:'',
 						village_area:'',
 						content:'',
+						tour:'',
 						industry:'',
 						hits:0,
 						demonstration:'',

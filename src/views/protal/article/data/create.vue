@@ -13,8 +13,11 @@
 				<TabPane :label="$t('basis_info')" name="tab_basis">
 					<Row>
 						<Col span="15">
+							<FormItem label="所属区域">
+								<Cascader :data="region" v-model="form.data.region" clearable filterable change-on-select placeholder="请输入或选择行政区域"></Cascader>
+							</FormItem>
 							<FormItem label="所属乡村">
-								<Cascader :data="region" v-model="form.data.village_id" clearable filterable placeholder="请输入或选择村落名称"></Cascader>
+								<Cascader :data="village" v-model="form.data.village_id" clearable filterable placeholder="请输入或选择村落名称"></Cascader>
 							</FormItem>
 							<FormItem :label="$t('article_title')" prop="title">
 								<Input type="text" v-model="form.data.title" :placeholder="$t('please')+$t('enter')+$t('article_title')"></Input>
@@ -176,6 +179,7 @@
 			return {
 				form:{
 					data:{
+						region:[],
 						village_id:[],
 						title:'',
 						thumbnail:'',
@@ -226,7 +230,8 @@
 					}
 				},
 				tabs:'tab_basis',
-				region:[]
+				region:[],
+				village:[]
 			}
 		},
 		mounted() {
@@ -234,12 +239,17 @@
 			this.$store.dispatch('readVillageData').then(result=>{
 				result.map((item,index)=>{
 					if(item.region_text){
-						that.region.push({
+						that.village.push({
 							label:item.region_text,
 							value:item.uniqid
 						})
 					}
 				})
+			})
+			this.$store.dispatch('readRegion',{
+				structure:'tree'
+			}).then(result=>{
+				that.region=result.children
 			})
 			this.$store.dispatch('readArticleType').then((data) => {
 				this.articleTypeTree(data);
@@ -297,7 +307,6 @@
 				this.formValidate('formVal',function(){
 					that.$store.dispatch('createArticleList',data).then((result) => {
 						that.$emit('submit',result);
-						that.handleReset();
 					});
 				})
 			},

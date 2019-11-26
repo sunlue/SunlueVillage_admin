@@ -22,7 +22,7 @@
 						<Col span="4" :key="index">
 							<div class="item" :key="index">
 								<div class="thumbnail" v-if="item.thumbnail">
-									<img :src="item.thumbnail" />
+									<img :src="$assets.url+item.thumbnail" />
 									<strong class="title">{{item.name}}</strong>
 								</div>
 								<div class="titles" v-else>{{item.name}}</div>
