@@ -1,9 +1,14 @@
 const menu = [{
 		name: '首页',
-		href: 'data'
+		href: 'data',
+		children: [{
+			name: '村落幻灯片',
+			href: 'slide'
+		}]
 	},
 	{
 		name: '村落概况',
+		href: 'basis',
 		children: [{
 				name: '基本信息',
 				href: 'basis'
@@ -28,6 +33,7 @@ const menu = [{
 	},
 	{
 		name: '组织党建',
+		href: 'group',
 		children: [{
 			name: '党组织',
 			href: 'group'
@@ -36,10 +42,7 @@ const menu = [{
 			href: 'newgroup'
 		}]
 	},
-	{
-		name: '村落幻灯片',
-		href: 'slide'
-	},
+
 	{
 		name: '历史演变',
 		children: [{

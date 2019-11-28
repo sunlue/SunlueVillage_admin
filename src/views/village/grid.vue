@@ -14,9 +14,9 @@
 						<template v-else>自然村</template>
 					</template>
 					<template slot-scope="{ row,index }" slot="type">
-						<Tooltip :content="row.type.join(',')">
+						<!-- <Tooltip :content="row.type.join(',')" v-if="row.type"> -->
 							{{row.type.join(',')}}
-						</Tooltip>
+						<!-- </Tooltip> -->
 					</template>
 					<template slot-scope="{ row,index }" slot="show">
 						<i-switch size="large" :value="row.show+''" true-value="1" false-value="0" @on-change="handleSwitch(row,index,'show',$event)">
@@ -114,6 +114,13 @@
 								}
 							},
 							{
+								title: '所属乡镇',
+								key: 'town_text',
+								minWidth: 90,
+								align:'center',
+								tooltip: 'true'
+							},
+							{
 								title: that.$t('village_name'),
 								key: 'name',
 								minWidth: 90,
@@ -122,9 +129,10 @@
 							},
 							{
 								title: that.$t('village_type'),
-								width: 90,
+								minWidth: 120,
 								slot: 'type',
-								align:'center'
+								align:'center',
+								tooltip: 'true'
 							},
 							{
 								title: that.$t('village_attr'),
@@ -137,7 +145,8 @@
 								minWidth: 120,
 								key: 'industry',
 								align:'center',
-								tooltip: 'true'
+								tooltip: 'true',
+								resizable:true
 							},
 							{
 								title: '人口',

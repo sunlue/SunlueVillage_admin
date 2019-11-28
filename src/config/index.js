@@ -1,4 +1,4 @@
-let development = "http://api.village.sunlue.io/";
+let development = "http://api.village.sunlue.com/";
 let production = "http://api.village.sunlue.com/";
 let assetsUrl = process.env.NODE_ENV == 'production' ? production : development;
 export default {

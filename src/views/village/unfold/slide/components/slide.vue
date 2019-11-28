@@ -162,7 +162,9 @@
 				var that = this,
 					items = [],
 					assetsUrl = that.$assets.url;
-				that.$store.dispatch('readVillageSlide', where).then((data) => {
+				that.$store.dispatch('readVillageSlide', Object.assign(where,{
+					village_id:this.$route.query.unique
+				})).then((data) => {
 					for (let i = 0; i < data.length; i++) {
 						let imageSrc = assetsUrl + data[i]['image'];
 						that.getImgInfo(imageSrc, function(width, height) {
@@ -202,7 +204,7 @@
 					title: that.$t('tips'),
 					content: that.$t('tips_delete_data'),
 					onOk: function() {
-						that.$store.dispatch('deleteSlide', {
+						that.$store.dispatch('deleteVillageSlide', {
 							uniqid: item.data.uniqid
 						}).then(() => {
 							that.items.splice(index, 1);

@@ -65,7 +65,7 @@
 					fixed:'right',
 					title: that.$t('user_date_diff')
 				}, {
-					width:128,
+					width:138,
 					align:'center',
 					key: 'ip',
 					fixed:'right',

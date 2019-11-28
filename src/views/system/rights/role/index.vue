@@ -17,7 +17,7 @@
 		</Card>
 		<Tree :data="data" :render="renderRole" v-if="false"></Tree>
 		<Modal v-model="modal" :mask-closable="false" :title="$t('role')" :footer-hide="false" :styles="{top: '50px'}">
-			<Form ref="roleForm" :model="form.data" :rules="form.rule" :label-width="88">
+			<Form ref="roleForm" :model="form.data" :rules="form.rule" :label-width="100">
 				<FormItem :label="$t('role_name')" prop="name">
 					<Input v-model="form.data.name" :placeholder="$t('enter_role_name')"></Input>
 				</FormItem>

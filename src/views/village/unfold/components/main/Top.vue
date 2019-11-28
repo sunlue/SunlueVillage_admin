@@ -17,7 +17,7 @@
 				</a>
 				<DropdownMenu slot="list">
 					<template v-for="(item, index) in village">
-						<DropdownItem :name="item.value" :key="index">{{ item.label }}</DropdownItem>
+						<DropdownItem :name="item.uniqid" :key="index">{{ item.region_text }}</DropdownItem>
 					</template>
 				</DropdownMenu>
 			</Dropdown>
@@ -47,19 +47,30 @@ export default {
 	data() {
 		return {
 			logo: logo,
-			village: {},
 			drawer: {
 				serverInfo: false
 			},
 			menu: menu,
+			village: [],
 			childMenu: []
 		};
+	},
+	mounted() {
+		this.$store.dispatch('readVillageData').then(result => {
+			this.village = result;
+		});
 	},
 	methods: {
 		shrink() {
 			this.$emit('shrink');
 		},
-		selectVillage(uniqid) {},
+		selectVillage(uniqid) {
+			let routeUrl = this.$router.resolve({
+				name: "village_unfold",
+				query: {unique:uniqid}
+			});
+			window.open(routeUrl .href, '_self');
+		},
 		userAction(name) {
 			this[name]();
 		},
@@ -85,7 +96,7 @@ export default {
 			});
 		},
 		mClick: function(m, i) {
-			this.childMenu = m.children?m.children:[];
+			this.childMenu = m.children ? m.children : [];
 			this.$emit('mClick', m);
 		}
 	}
