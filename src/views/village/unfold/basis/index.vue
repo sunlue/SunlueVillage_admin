@@ -128,17 +128,30 @@
 									</Row>
 								</Col>
 								<Col span="8" offset="1">
-									 <Upload ref="upload" type="drag" accept="image" name="file" :show-upload-list="false" :action="$upload.image" 
+									<Upload ref="upload" type="drag" accept="image" name="file" :show-upload-list="false" :action="$upload.image" 
 										:format="['jpg','jpeg','png']" :on-success="uploadThumbSuccess">
 										<div style="padding: 16px 0">
 											<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-											<p>{{$t('upload_drag')}}</p>
+											<p>{{$t('upload_drag')}}村落封面图</p>
 										</div>
 									</Upload>
 									<div class="preview" v-if="form.data.thumbnail">
 										<img :src="$assets.url+form.data.thumbnail" />
 										<div class="deleted">
-											<Button type="error">{{$t('delete')}}</Button>
+											<Button type="error">{{$t('delete')}}村落封面图</Button>
+										</div>
+									</div>
+									<Upload ref="upload" type="drag" accept="image" name="file" :show-upload-list="false" :action="$upload.image"
+										:format="['jpg','jpeg','png']" :on-success="uploadTourSuccess">
+										<div style="padding: 16px 0">
+											<Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+											<p>{{$t('upload_drag')}}全景封面图</p>
+										</div>
+									</Upload>
+									<div class="preview" v-if="form.data.tour_img">
+										<img :src="$assets.url+form.data.tour_img" />
+										<div class="deleted">
+											<Button type="error">{{$t('delete')}}全景封面图</Button>
 										</div>
 									</div>
 									<FormItem :label-width="0">
@@ -256,6 +269,7 @@
 						domain_area:'',
 						village_area:'',
 						content:'',
+						tour_img:'',
 						tour:'',
 						industry:'',
 						hits:0,
@@ -321,6 +335,13 @@
 			uploadThumbSuccess(response){
 				if(response.code==200){
 					this.form.data.thumbnail = response.data.link;
+				}else{
+					this.$Message.error(response.info);
+				}
+			},
+			uploadTourSuccess(response){
+				if(response.code==200){
+					this.form.data.tour_img = response.data.link;
 				}else{
 					this.$Message.error(response.info);
 				}

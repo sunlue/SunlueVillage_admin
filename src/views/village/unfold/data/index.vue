@@ -8,9 +8,9 @@
 				:trigger="carousel.setting.trigger"
 				:arrow="carousel.setting.arrow"
 				:height="carousel.setting.height">
-				<CarouselItem v-for="(item, index) in carousel.items" :key="index">
+				<CarouselItem v-for="(item, index) in carousel.sildes" :key="index">
 					<div class="carousel-item">
-						<img :src="item" :style="{ height: carousel.setting.height + 'px' }" />
+						<img :src="$assets.url+item.image" :style="{ height: carousel.setting.height + 'px' }" />
 					</div>
 				</CarouselItem>
 			</Carousel>
@@ -36,10 +36,8 @@
 					<Button icon="ios-add" type="dashed" size="small" @click="modal.tag.show=true" v-if="pageState == 'edit'">添加标签</Button>
 					<Divider />
 				</div>
-				<div class="intro">
-					<div v-html="data.content" v-if="pageState=='view'"></div>
-					<Tinymce ref="content" v-else v-model="data.content" />
-				</div>
+				<div class="intro" v-html="data.content" v-if="pageState=='view'"></div>
+				<Tinymce ref="content" v-else v-model="data.content" />
 			</Modal>
 			<Modal v-model="modal.tag.show" title="添加标签" @on-ok="handleAddTag" :z-index="100">
 				<Input v-model="modal.tag.text"></Input>
@@ -79,14 +77,7 @@ export default {
 					arrow: 'never',
 					height: 500
 				},
-				items: [
-					'http://museum.zhaiu.com/attached/image/20171218/52260110003.GJ001-P001.jpg',
-					'http://museum.zhaiu.com/attached/image/20171218/52260110003.GJ001-P002.jpg',
-					'http://museum.zhaiu.com/attached/image/20171218/52260110003.GJ002-P004.jpg',
-					'http://museum.zhaiu.com/attached/image/20171218/52260110003.GJ003-P002.jpg',
-					'http://museum.zhaiu.com/attached/image/20171220/52260110003.JZ002-P025.jpg',
-					'http://museum.zhaiu.com/attached/image/20171220/52260110003.JS006-P008.jpg'
-				]
+				sildes: []
 			},
 			modal: {
 				show: false,
@@ -140,6 +131,13 @@ export default {
 				this.alert=true;
 			}
 		});
+		
+		this.$store.dispatch('readVillageSlide', {
+			village_id:this.$route.query.unique
+		}).then((data) => {
+			this.carousel.sildes = data;
+		});
+		
 	},
 	methods: {
 		screenHeight: function() {
@@ -262,6 +260,7 @@ export default {
 		color: #666;
 		line-height: 1.5;
 		min-height: 300px;
+		max-height: 500px;
 		overflow-y: auto;
 	}
 }
